@@ -1,3 +1,5 @@
+import { userMongoDbModel } from '../mongodb_schemas/users.js'
+
 export class User {
     async create({ input }) {
         const {
@@ -11,9 +13,14 @@ export class User {
             name,
             lastName,
             email,
-            password
+            password 
         }
 
-        return newUser
+        try {
+            const createdUser = await userMongoDbModel.create(newUser)
+            return createdUser
+        } catch(error) {
+            throw new Error(error)
+        }
     }
 }
