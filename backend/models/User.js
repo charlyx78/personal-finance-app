@@ -20,7 +20,7 @@ export class User {
             const createdUser = await userMongoDbModel.create(newUser)
             return createdUser
         } catch(error) {
-            throw new Error(error)
+            throw new Error(error.message)
         }
     }
 }

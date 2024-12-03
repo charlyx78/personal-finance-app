@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { handleMongoosePostSaveErrors } from "../middlewares/handleMongoosePostSaveErrors.js"
 
 const usersSchema = new mongoose.Schema({
     name: {
@@ -20,5 +21,7 @@ const usersSchema = new mongoose.Schema({
         required: true
     },
 },  { timestamps: true })
+
+usersSchema.post('save', handleMongoosePostSaveErrors)
 
 export const userMongoDbModel = mongoose.model('users', usersSchema)
