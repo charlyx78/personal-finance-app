@@ -1,1 +1,9 @@
-Correr el proyecto con "npm run dev"
+-Correr el proyecto con "npm run dev"
+-Instalar las dependencias con "npm install" 
+-Separar la logica correctamente usando MVC 
+-Validar todos los registros con zod y mongoose
+-Utilizar el middleware para los errores de mongoose si es necesario
+-No enviar datos con demasiada informacion o con informacion sensible al cliente
+-Utilizar variables de entorno
+-Escribir el codigo en ingles y sin errores de ortografia
+-Hacer commits descriptivos y en ingles
