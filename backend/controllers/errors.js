@@ -8,3 +8,5 @@ const createErrorFactory = function(name) {
 
 export const DuplicatedKeyError = createErrorFactory('DuplicatedKeyError')
 export const ValidationError = createErrorFactory('ValidationError')
+export const NotFoundError = createErrorFactory('NotFoundError')
+export const AuthenticationError = createErrorFactory('NotFoundError')

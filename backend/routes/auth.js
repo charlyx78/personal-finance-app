@@ -1,9 +1,12 @@
 import { Router } from "express"
+import { AuthController } from "../controllers/auth.js"
 
 export function createAuthRouter() {
     const authRouter = Router()
 
-    authRouter.post('/login', (req,res) => {})
+    const authController = new AuthController()
+
+    authRouter.post('/login', authController.login)
 
     return authRouter
 }

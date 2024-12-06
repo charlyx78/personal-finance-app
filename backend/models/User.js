@@ -1,4 +1,6 @@
 import { userMongoDbModel } from '../mongodb_schemas/users.js'
+import bcrypt  from 'bcrypt'
+import { SALT_ROUNDS } from '../config.js'
 
 export class User {
     async create({ input }) {
@@ -9,11 +11,13 @@ export class User {
             password
         } = input
 
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
+
         const newUser = {
             name,
             lastName,
             email,
-            password 
+            password: hashedPassword
         }
 
         try {

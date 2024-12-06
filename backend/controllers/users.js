@@ -13,9 +13,9 @@ export class UserController {
 
         try {
             const newUser = await user.create({ input: result.data })
-            return res.status(201).json(newUser)
+            return res.status(201).json({ user: newUser })
         } catch (error) {
-            return res.status(500).json({ error: error.message })
+            return res.status(500).json({ error: error })
         }
     }
 }
