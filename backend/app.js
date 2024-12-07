@@ -1,25 +1,30 @@
-import mongoose from 'mongoose'
-import dotenv from 'dotenv'
 import express, { json } from 'express'
-import { PORT } from './config.js'
+import mongoose from 'mongoose'
+import cookieParser from "cookie-parser";
+
+import { PORT, MONGO_URI } from './config.js'
 import { createAuthRouter } from './routes/auth.js'
 import { createUsersRouter } from './routes/users.js'
-
-dotenv.config()
+import { verifySession } from './middlewares/verifySession.js';
 
 const app = express()
 
+app.use(cookieParser())
 app.use(json())
 app.disable('x-powered-by')
 
 app.use('/auth', createAuthRouter())
 app.use('/users', createUsersRouter())
 
+app.get('/protected', verifySession, (req, res) => {
+    res.json({message: 'you entered the protected route!'})
+})
+
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`)
 })
 
-await mongoose.connect(process.env.MONGO_URI).then(() => {
+await mongoose.connect(MONGO_URI).then(() => {
     console.log('Connected to MongoDB!')
 }).catch((error) => {
     console.log('Error al conectarse con la base de datos: ', error)

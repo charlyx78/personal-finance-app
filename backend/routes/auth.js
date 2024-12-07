@@ -7,6 +7,7 @@ export function createAuthRouter() {
     const authController = new AuthController()
 
     authRouter.post('/login', authController.login)
+    authRouter.post('/logout', authController.logout)
 
     return authRouter
 }
