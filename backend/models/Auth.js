@@ -13,9 +13,6 @@ export class Auth {
 
         if (!user) throw new NotFoundError('User not found')
 
-        console.log('input: ' + password)
-        console.log('database: ' + user.password)
-
         const isValid = await bcrypt.compare(password, user.password)
 
         if (!isValid) throw new AuthenticationError('Email or password are not valid. Please try again')
