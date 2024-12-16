@@ -6,6 +6,7 @@ import { PORT, MONGO_URI } from './config.js'
 import { createAuthRouter } from './routes/auth.js'
 import { createUsersRouter } from './routes/users.js'
 import { verifySession } from './middlewares/verifySession.js';
+import { createAccountRouter } from './routes/accounts.js';
 
 const app = express()
 
@@ -15,10 +16,7 @@ app.disable('x-powered-by')
 
 app.use('/auth', createAuthRouter())
 app.use('/users', createUsersRouter())
-
-app.get('/protected', verifySession, (req, res) => {
-    res.json({message: 'you entered the protected route!'})
-})
+app.use('/accounts', verifySession, createAccountRouter())
 
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`)
