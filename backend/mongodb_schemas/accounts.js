@@ -22,4 +22,4 @@ accountsSchema.index({ name: 1, user: 1 }, { unique: true })
 
 accountsSchema.post('save', handleMongoosePostSaveErrors)
 
-export const accountMongoDBModel = mongoose.model('accounts', accountsSchema)
+export const accountsMongoDBModel = mongoose.model('accounts', accountsSchema)

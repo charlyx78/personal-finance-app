@@ -6,7 +6,9 @@ export function createAccountRouter() {
 
     const accountsController = new AccountsController()
 
-    accountRouter.post('/create', accountsController.create)
+    accountRouter.post('', accountsController.create)
+    accountRouter.get('', accountsController.read)
+    accountRouter.patch('', accountsController.update)
 
     return accountRouter
 }
