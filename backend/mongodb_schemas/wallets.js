@@ -4,7 +4,7 @@ import { handleMongoosePostSaveErrors } from "../middlewares/handleMongoosePostS
 export const walletsSchema = new mongoose.Schema({
     name: {
         type: String,
-        maxLength: 20,
+        maxlength: 20,
         required: true
     },
     balance: {
@@ -12,9 +12,14 @@ export const walletsSchema = new mongoose.Schema({
         required: true,
         min: 1,
     },
-    user: {
+    userId: {
         type: mongoose.Schema.ObjectId,
         ref: 'users',
+        required: true
+    },
+    status: {
+        type: Boolean,
+        default: true,
         required: true
     }
 }, { timestamps: true })

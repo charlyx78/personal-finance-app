@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { handleMongoosePostSaveErrors } from "../middlewares/handleMongoosePostSaveErrors.js";
 
-export const incomesSchema = new mongoose.Schema({
+export const expensesSchema = new mongoose.Schema({
     amount: {
         type: mongoose.Types.Decimal128,
         min: 1,
@@ -32,9 +32,9 @@ export const incomesSchema = new mongoose.Schema({
     }
 }, { timestamps: true })
 
-incomesSchema.index({ categoryId: 1, date: 1 })
-incomesSchema.index({ walletId: 1, date: 1 })
+expensesSchema.index({ categoryId: 1, date: 1 })
+expensesSchema.index({ walletId: 1, date: 1 })
 
-incomesSchema.post('save', handleMongoosePostSaveErrors)
+expensesSchema.post('save', handleMongoosePostSaveErrors)
 
-export const incomesMongoDbModel = mongoose.model('incomes', incomesSchema)
+export const expensesMongoDbModel = mongoose.model('expenses', expensesSchema)
