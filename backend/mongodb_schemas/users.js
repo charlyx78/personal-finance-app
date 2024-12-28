@@ -4,23 +4,31 @@ import { handleMongoosePostSaveErrors } from "../middlewares/handleMongoosePostS
 const usersSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        maxLength: 20,
+        required: true,
     },
     lastName: {
         type: String,
-        required: true
+        maxLength: 20,
+        required: true,
     },
     email: {
         type: String,
+        minLength: 5,
+        maxLength: 60,
         unique: true,
-        required: true
+        required: true,
     },
     password: {
         type: String,
+        minLength: 8,
+        maxLength: 255,
         hide: true,
         required: true
     },
 },  { timestamps: true })
+
+usersSchema.index({ email: 1 }, { unique: true })
 
 usersSchema.post('save', handleMongoosePostSaveErrors)
 

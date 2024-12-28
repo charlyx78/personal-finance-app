@@ -1,21 +1,21 @@
-import { accountsMongoDBModel } from "../mongodb_schemas/accounts.js"
+import { walletsMongoDBModel } from "../mongodb_schemas/wallets.js"
 
-export class Account {
+export class Wallet {
     async create({ input, userId }) {
         const {
             name,
             balance
         } = input
 
-        const newAccount = {
+        const newWallet = {
             name: name,
             balance: balance,
             user: userId
         }
 
         try {
-            const accountCreated = await accountsMongoDBModel.create(newAccount)
-            return accountCreated
+            const walletCreated = await walletsMongoDBModel.create(newWallet)
+            return walletCreated
         } catch (error) {
             throw new Error(error.message)
         }
@@ -23,11 +23,11 @@ export class Account {
 
     async read({ userId }) {
         try {
-            const accounts = await accountsMongoDBModel.find(
+            const wallets = await walletsMongoDBModel.find(
                 { user: userId },
                 { name: 1, balance: 1 }
             )
-            return accounts
+            return wallets
         } catch (error) {
             throw new Error(error.message)
         }
@@ -41,7 +41,7 @@ export class Account {
         } = input
 
         try {
-            const updatedAccount = await accountsMongoDBModel.findByIdAndUpdate(id, {
+            const updatedWallet = await walletsMongoDBModel.findByIdAndUpdate(id, {
                 name,
                 $inc: { balance: amount }
             }, {
@@ -52,7 +52,7 @@ export class Account {
                 }
             })
 
-            return updatedAccount
+            return updatedWallet
         } catch (error) {
             throw new Error(error.message)
         }
