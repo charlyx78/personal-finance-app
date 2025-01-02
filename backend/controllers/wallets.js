@@ -7,9 +7,7 @@ const wallet = new Wallet()
 export class WalletsController {
     create = async (req, res) => {
         try {
-            const accessToken = req.cookies.access_token
-            const tokenObject = jwt.decode(accessToken, SECRET_JWT_KEY)
-            const { user } = tokenObject
+            const user = await AuthController.getLoggedUser(req, res)
 
             const newWallet = await wallet.create({ input: req.body, userId: user.id })
             return res.status(201).json({ wallet: newWallet })
@@ -20,9 +18,7 @@ export class WalletsController {
 
     read = async (req, res) => {
         try {
-            const accessToken = req.cookies.access_token
-            const tokenObject = jwt.decode(accessToken, SECRET_JWT_KEY)
-            const { user } = tokenObject
+            const user = await AuthController.getLoggedUser(req, res)
 
             const wallets = await wallet.read({ userId: user.id })
 
@@ -36,7 +32,7 @@ export class WalletsController {
         }
     }
 
-    update = async(req, res) => {
+    update = async (req, res) => {
         try {
             const updatedWallet = await wallet.update({ input: req.body })
 

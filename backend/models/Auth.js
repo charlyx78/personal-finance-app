@@ -1,6 +1,8 @@
 import { userMongoDbModel } from "../mongodb_schemas/users.js";
 import bcrypt from 'bcrypt'
 import { AuthenticationError, NotFoundError } from "../controllers/errors.js";
+import { SECRET_JWT_KEY } from "../config.js"
+import jwt from 'jsonwebtoken'
 
 export class Auth {
     async login({ input }) {
