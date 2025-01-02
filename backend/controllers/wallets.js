@@ -1,6 +1,5 @@
-import { SECRET_JWT_KEY } from "../config.js"
 import { Wallet } from "../models/Wallet.js"
-import jwt from 'jsonwebtoken'
+import { AuthController } from "./auth.js"
 
 const wallet = new Wallet()
 
@@ -37,6 +36,16 @@ export class WalletsController {
             const updatedWallet = await wallet.update({ input: req.body })
 
             return res.status(200).json({ wallet: updatedWallet })
+        } catch (error) {
+            return res.status(500).json({ error: error.message })
+        }
+    }
+
+    delete = async (req, res) => {
+        try {
+            const deletedWallet = await wallet.delete({ id: req.body.id })
+
+            return res.status(200).json({ wallet: deletedWallet })
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }

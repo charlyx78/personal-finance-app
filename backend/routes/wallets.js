@@ -9,6 +9,7 @@ export function createWalletsRouter() {
     walletRouter.post('', walletsController.create)
     walletRouter.get('', walletsController.read)
     walletRouter.patch('', walletsController.update)
+    walletRouter.delete('', walletsController.delete)
 
     return walletRouter
 }

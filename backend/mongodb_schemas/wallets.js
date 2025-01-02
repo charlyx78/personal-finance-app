@@ -24,7 +24,7 @@ export const walletsSchema = new mongoose.Schema({
     }
 }, { timestamps: true })
 
-walletsSchema.index({ name: 1, user: 1 }, { unique: true })
+walletsSchema.index({ name: 1, userId: 1 }, { unique: true, partialFilterExpression: { status: true } })
 
 walletsSchema.post('save', handleMongoosePostSaveErrors)
 

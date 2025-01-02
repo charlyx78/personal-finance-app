@@ -24,7 +24,7 @@ export class Wallet {
     async read({ userId }) {
         try {
             const wallets = await walletsMongoDBModel.find(
-                { user: userId, status: true },
+                { userId: userId, status: true },
                 { name: 1, balance: 1 }
             )
             return wallets
@@ -55,6 +55,25 @@ export class Wallet {
             return updatedWallet
         } catch (error) {
             throw new Error(error.message)
+        }
+    }
+
+    async delete({ id }) {
+        try {
+            const deletedWallet = await walletsMongoDBModel.findByIdAndUpdate(id, {
+                status: false
+            }, {
+                new: true,
+                projection: {
+                    name: 1,
+                    balance: 1,
+                    status: 1
+                }
+            })
+            
+            return deletedWallet
+        } catch (error) {
+            throw new Error(error.message);
         }
     }
 }

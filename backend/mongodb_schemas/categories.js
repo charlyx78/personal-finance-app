@@ -29,7 +29,7 @@ export const categoriesSchema = new mongoose.Schema({
     }
 }, { timestamps: true })
 
-categoriesSchema.index({ name: 1, userId: 1 }, { unique: true })
+categoriesSchema.index({ name: 1, userId: 1 }, { unique: true, partialFilterExpression: { status: true } })
 
 categoriesSchema.post('save', handleMongoosePostSaveErrors)
 
