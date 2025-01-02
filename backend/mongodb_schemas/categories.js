@@ -13,7 +13,7 @@ export const categoriesSchema = new mongoose.Schema({
     },
     color: {
         type: String,
-        minlenght: 7,
+        minlength: 7,
         maxlength: 7,
         required: true
     },
@@ -27,10 +27,10 @@ export const categoriesSchema = new mongoose.Schema({
         default: true,
         required: true
     }
-}, {timestamps: true})
+}, { timestamps: true })
 
-categoriesSchema.index({ name: 1, user: 1 }, { unique: true })
+categoriesSchema.index({ name: 1, userId: 1 }, { unique: true })
 
-categoriesSchema.post('save', handleMongoosePostSaveErrors())
+categoriesSchema.post('save', handleMongoosePostSaveErrors)
 
 export const categoriesMongoDbModel = mongoose.model('categories', categoriesSchema)

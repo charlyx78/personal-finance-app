@@ -10,7 +10,7 @@ export class Wallet {
         const newWallet = {
             name: name,
             balance: balance,
-            user: userId
+            userId: userId
         }
 
         try {
@@ -24,7 +24,7 @@ export class Wallet {
     async read({ userId }) {
         try {
             const wallets = await walletsMongoDBModel.find(
-                { user: userId },
+                { user: userId, status: true },
                 { name: 1, balance: 1 }
             )
             return wallets

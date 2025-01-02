@@ -5,7 +5,8 @@ import cookieParser from "cookie-parser";
 import { PORT, MONGO_URI } from './config.js'
 import { createAuthRouter } from './routes/auth.js'
 import { createUsersRouter } from './routes/users.js'
-import { createWalletRouter } from './routes/wallets.js';
+import { createWalletsRouter } from './routes/wallets.js';
+import { createCategoriesRouter } from './routes/categories.js';
 import { verifySession } from './middlewares/verifySession.js';
 
 const app = express()
@@ -16,7 +17,8 @@ app.disable('x-powered-by')
 
 app.use('/auth', createAuthRouter())
 app.use('/users', createUsersRouter())
-app.use('/wallets', verifySession, createWalletRouter())
+app.use('/wallets', verifySession, createWalletsRouter())
+app.use('/categories', verifySession, createCategoriesRouter())
 
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`)

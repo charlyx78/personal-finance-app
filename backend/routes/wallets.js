@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { WalletsController } from "../controllers/wallets.js"
 
-export function createWalletRouter() {
+export function createWalletsRouter() {
     const walletRouter = Router()
 
     const walletsController = new WalletsController()
