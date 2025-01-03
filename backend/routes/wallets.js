@@ -6,10 +6,10 @@ export function createWalletsRouter() {
 
     const walletsController = new WalletsController()
 
-    walletRouter.post('', walletsController.create)
-    walletRouter.get('', walletsController.read)
-    walletRouter.patch('', walletsController.update)
-    walletRouter.delete('', walletsController.delete)
+    walletRouter.post('/', walletsController.create)
+    walletRouter.get('/', walletsController.read)
+    walletRouter.patch('/:id', walletsController.update)
+    walletRouter.delete('/:id', walletsController.delete)
 
     return walletRouter
 }

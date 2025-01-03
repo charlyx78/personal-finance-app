@@ -8,6 +8,8 @@ export function createCategoriesRouter() {
 
     categoriesRouter.post('/', categoriesController.create)
     categoriesRouter.get('/', categoriesController.read)
+    categoriesRouter.patch('/:id', categoriesController.update)
+    categoriesRouter.delete('/:id', categoriesController.delete)
 
     return categoriesRouter
 }

@@ -1,6 +1,4 @@
 import { Category } from "../models/Category.js"
-import { SECRET_JWT_KEY } from "../config.js"
-import jwt from 'jsonwebtoken'
 import { AuthController } from "./auth.js"
 
 const category = new Category()
@@ -23,6 +21,26 @@ export class CategoriesController {
 
             const categories = await category.read({ userId: user.id })
             return res.status(200).json({ "message": "Categories found", categories: categories })
+        } catch (error) {
+            return res.status(500).json({ error: error.message })
+        }
+    }
+
+    update = async (req, res) => {
+        try {
+            const updatedCategory = await category.update({ input: req.body, id: req.params.id })
+
+            return res.status(200).json({ "message": "Category updated", category: updatedCategory })
+        } catch (error) {
+            return res.status(500).json({ error: error.message })
+        }
+    }
+
+    delete = async (req, res) => {
+        try {
+            const deletedCategory = await category.delete({ id: req.params.id })
+
+            return res.status(200).json({ "message": "Category deleted", category: deletedCategory })
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }

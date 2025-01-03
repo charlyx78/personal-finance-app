@@ -31,4 +31,45 @@ export class Category {
             throw new Error(error.message)
         }
     }
+
+    async update({ input, id }) {
+        const {
+            name,
+            description,
+            color
+        } = input
+        try {
+            const updatedCategory = await categoriesMongoDbModel.findByIdAndUpdate(id, {
+                name,
+                description,
+                color
+            }, {
+                new: true,
+                projection: {
+                    userId: 0
+                }
+            })
+
+            return updatedCategory
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
+
+    async delete({ id }) {
+        try {
+            const deletedCategory = await categoriesMongoDbModel.findByIdAndUpdate(id, {
+                status: false
+            }, {
+                new: true,
+                projection: {
+                    userId: 0
+                }
+            })
+
+            return deletedCategory
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
 }

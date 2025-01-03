@@ -33,7 +33,7 @@ export class WalletsController {
 
     update = async (req, res) => {
         try {
-            const updatedWallet = await wallet.update({ input: req.body })
+            const updatedWallet = await wallet.update({ input: req.body, id: req.params.id })
 
             return res.status(200).json({ wallet: updatedWallet })
         } catch (error) {
@@ -43,7 +43,7 @@ export class WalletsController {
 
     delete = async (req, res) => {
         try {
-            const deletedWallet = await wallet.delete({ id: req.body.id })
+            const deletedWallet = await wallet.delete({ id: req.params.id })
 
             return res.status(200).json({ wallet: deletedWallet })
         } catch (error) {

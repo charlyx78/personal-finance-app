@@ -33,9 +33,8 @@ export class Wallet {
         }
     }
 
-    async update({ input }) {
+    async update({ input, id }) {
         const {
-            id,
             name,
             amount
         } = input
