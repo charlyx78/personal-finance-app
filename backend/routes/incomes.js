@@ -8,6 +8,9 @@ export function createIncomesRouter() {
     const incomesController = new IncomesController()
 
     incomesRouter.post("/", incomesController.create)
+    incomesRouter.get("/", incomesController.read)
+    incomesRouter.get("/:id", incomesController.readById)
+    incomesRouter.get("/wallet/:id", incomesController.readByWalletId)
 
     return incomesRouter
 }

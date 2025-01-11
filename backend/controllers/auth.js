@@ -24,14 +24,7 @@ export class AuthController {
             return res.status(500).json({ error: error.message })
         }
     }
-
-    static getLoggedUser = async (req, res) => {
-        const accessToken = req.cookies.access_token
-        const tokenObject = jwt.decode(accessToken, SECRET_JWT_KEY)
-        const { user } = tokenObject
-        return user
-    }
-
+    
     logout = async (req, res) => {
         return res.clearCookie('access_token').json({ message: 'Logout successful' })
     }

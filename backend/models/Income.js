@@ -2,7 +2,7 @@ import { incomesMongoDbModel } from "../mongodb_schemas/incomes.js"
 import { walletsMongoDbModel } from "../mongodb_schemas/wallets.js"
 
 export class Income {
-    async create({ input }) {
+    async create({ userId, input }) {
         const {
             amount,
             categoryId,
@@ -16,6 +16,7 @@ export class Income {
             categoryId,
             date,
             notes,
+            userId: userId,
             walletId
         }
 
@@ -25,30 +26,51 @@ export class Income {
         try {
             const createdIncome = await incomesMongoDbModel.create([newIncome], { session })
 
-            await walletsMongoDbModel.findByIdAndUpdate(walletId,
+            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId, wallet: walletId, status: true },
                 { $inc: { balance: amount } },
-                { session }
+                { new: true, session },
             )
 
+            if(!updatedWallet) {
+                throw new Error("Wallet don't exist or has been deleted")
+            }
+
             await session.commitTransaction()
-            session.endSession()
 
             return createdIncome
         } catch (error) {
             await session.abortTransaction()
+
+            throw new Error(error.message)
+        } finally {
             session.endSession()
-            
+        }
+    }
+
+    async read({ userId }) {
+        try {
+            const incomes = await incomesMongoDbModel.find({ userId: userId, status: true })
+            return incomes
+        } catch (error) {
             throw new Error(error.message)
         }
     }
 
-    async read({ walletId }) {
+    async readById({ userId, id }) {
         try {
-            const incomes = await incomesMongoDbModel.find({ walletId: walletId })
+            const income = await incomesMongoDbModel.findOne({ userId: userId, id: id, status: true })
+            return income
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
+
+    async readByWalletId({ userId, walletId }) {
+        try {
+            const incomes = await incomesMongoDbModel.find({ userId: userId, walletId: walletId, status: true })
             return incomes
         } catch (error) {
             throw new Error(error.message)
-
         }
     }
 }

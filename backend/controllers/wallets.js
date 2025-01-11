@@ -6,9 +6,7 @@ const wallet = new Wallet()
 export class WalletsController {
     create = async (req, res) => {
         try {
-            const user = await AuthController.getLoggedUser(req, res)
-
-            const newWallet = await wallet.create({ input: req.body, userId: user.id })
+            const newWallet = await wallet.create({ userId: req.user.id, input: req.body })
             return res.status(201).json({ wallet: newWallet })
         } catch (error) {
             return res.status(500).json({ error: error.message })
@@ -17,9 +15,7 @@ export class WalletsController {
 
     read = async (req, res) => {
         try {
-            const user = await AuthController.getLoggedUser(req, res)
-
-            const wallets = await wallet.read({ userId: user.id })
+            const wallets = await wallet.read({ userId: req.user.id })
 
             if (wallets.length === 0) {
                 return res.status(400).json({ error: 'No wallets found for user' })
@@ -33,9 +29,7 @@ export class WalletsController {
 
     readById = async (req, res) => {
         try {
-            const user = await AuthController.getLoggedUser(req, res)
-
-            const walletFound = await wallet.readById({ _id: req.params.id, userId: user.id })
+            const walletFound = await wallet.readById({ userId: req.user.id, id: req.params.id })
 
             if (!walletFound) {
                 return res.status(400).json({ error: 'Wallet not found' })
@@ -49,7 +43,7 @@ export class WalletsController {
 
     update = async (req, res) => {
         try {
-            const updatedWallet = await wallet.update({ input: req.body, id: req.params.id })
+            const updatedWallet = await wallet.update({ userId: req.user.id, id: req.params.id, input: req.body })
 
             return res.status(200).json({ wallet: updatedWallet })
         } catch (error) {
@@ -59,7 +53,7 @@ export class WalletsController {
 
     delete = async (req, res) => {
         try {
-            const deletedWallet = await wallet.delete({ id: req.params.id })
+            const deletedWallet = await wallet.delete({ userId: req.user.id, id: req.params.id })
 
             return res.status(200).json({ wallet: deletedWallet })
         } catch (error) {

@@ -1,7 +1,7 @@
 import { categoriesMongoDbModel } from '../mongodb_schemas/categories.js'
 
 export class Category {
-    async create({ input, userId }) {
+    async create({ userId, input }) {
         const {
             name,
             description,
@@ -34,21 +34,21 @@ export class Category {
 
     async readById({ userId, id }) {
         try {
-            const categoryFound = await categoriesMongoDbModel.findOne({ id: id, userId: userId, status: true }, { userId: 0, status: 0 })
+            const categoryFound = await categoriesMongoDbModel.findOne({ userId: userId, id: id, status: true }, { userId: 0, status: 0 })
             return categoryFound
         } catch (error) {
             throw new Error(error.message)
         }
     }
 
-    async update({ input, id }) {
+    async update({ userId, id, input }) {
         const {
             name,
             description,
             color
         } = input
         try {
-            const updatedCategory = await categoriesMongoDbModel.findByIdAndUpdate(id, {
+            const updatedCategory = await categoriesMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
                 name,
                 description,
                 color
@@ -65,9 +65,9 @@ export class Category {
         }
     }
 
-    async delete({ id }) {
+    async delete({ userId, id }) {
         try {
-            const deletedCategory = await categoriesMongoDbModel.findByIdAndUpdate(id, {
+            const deletedCategory = await categoriesMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
                 status: false
             }, {
                 new: true,

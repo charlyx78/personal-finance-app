@@ -6,13 +6,10 @@ export const verifySession = (req, res, next) => {
     if (!token)
         return res.status(403).json({ message: 'Access not authorized' })
 
-    if(token.expire)
-        return res.status(403).json({ message: 'Access not authorized' })
-
     try {
         const userData = jwt.verify(token, SECRET_JWT_KEY)
         if(!req.user) {
-            req.user = userData.id
+            req.user = userData.user
         }
         next()
     } catch (error) {

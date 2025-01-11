@@ -6,9 +6,7 @@ const category = new Category()
 export class CategoriesController {
     create = async (req, res) => {
         try {
-            const user = await AuthController.getLoggedUser(req, res)
-
-            const newCategory = await category.create({ input: req.body, userId: user.id })
+            const newCategory = await category.create({ userId: req.user.id, input: req.body })
             return res.status(201).json({ message: "Category created successfully!", category: newCategory })
         } catch (error) {
             return res.status(500).json({ error: error.message })
@@ -17,11 +15,9 @@ export class CategoriesController {
 
     read = async (req, res) => {
         try {
-            const user = await AuthController.getLoggedUser(req, res)
+            const categories = await category.read({ userId: req.user.id })
 
-            const categories = await category.read({ userId: user.id })
-
-            if(categories.length === 0) {
+            if (categories.length === 0) {
                 return res.status(404).json({ "message": "Categories not found" })
             }
 
@@ -33,11 +29,9 @@ export class CategoriesController {
 
     readById = async (req, res) => {
         try {
-            const user = await AuthController.getLoggedUser(req, res)
+            const categoryFound = await category.readById({ userId: req.user.id, id: req.params.id })
 
-            const categoryFound = await category.readById({ id: req.params.id, userId: user.id })
-
-            if(!categoryFound) {
+            if (!categoryFound) {
                 return res.status(404).json({ "message": "Category not found" })
             }
 
@@ -49,7 +43,7 @@ export class CategoriesController {
 
     update = async (req, res) => {
         try {
-            const updatedCategory = await category.update({ input: req.body, id: req.params.id })
+            const updatedCategory = await category.update({ userId: req.user.id, id: req.params.id, input: req.body })
 
             return res.status(200).json({ "message": "Category updated", category: updatedCategory })
         } catch (error) {
@@ -59,7 +53,7 @@ export class CategoriesController {
 
     delete = async (req, res) => {
         try {
-            const deletedCategory = await category.delete({ id: req.params.id })
+            const deletedCategory = await category.delete({ userId: req.user.id, id: req.params.id })
 
             return res.status(200).json({ "message": "Category deleted", category: deletedCategory })
         } catch (error) {

@@ -1,7 +1,7 @@
 import { walletsMongoDbModel } from "../mongodb_schemas/wallets.js"
 
 export class Wallet {
-    async create({ input, userId }) {
+    async create({ userId, input }) {
         const {
             name,
             balance
@@ -36,7 +36,7 @@ export class Wallet {
     async readById({ userId, id }) {
         try {
             const wallet = await walletsMongoDbModel.findOne(
-                { id: id, userId: userId, status: true },
+                { userId: userId, id: id, status: true },
                 { name: 1, balance: 1 }
             )
             return wallet
@@ -45,14 +45,14 @@ export class Wallet {
         }
     }
 
-    async update({ input, id }) {
+    async update({ userId, id, input }) {
         const {
             name,
             amount
         } = input
 
         try {
-            const updatedWallet = await walletsMongoDbModel.findByIdAndUpdate(id, {
+            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
                 name,
                 $inc: { balance: amount }
             }, {
@@ -69,9 +69,9 @@ export class Wallet {
         }
     }
 
-    async delete({ id }) {
+    async delete({ userId, id }) {
         try {
-            const deletedWallet = await walletsMongoDbModel.findByIdAndUpdate(id, {
+            const deletedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
                 status: false
             }, {
                 new: true,
@@ -81,7 +81,7 @@ export class Wallet {
                     status: 1
                 }
             })
-            
+
             return deletedWallet
         } catch (error) {
             throw new Error(error.message);
