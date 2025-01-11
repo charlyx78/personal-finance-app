@@ -1,3 +1,4 @@
+import { NotFoundError } from "../controllers/errors.js"
 import { walletsMongoDbModel } from "../mongodb_schemas/wallets.js"
 
 export class Wallet {
@@ -27,6 +28,7 @@ export class Wallet {
                 { userId: userId, status: true },
                 { name: 1, balance: 1 }
             )
+
             return wallets
         } catch (error) {
             throw new Error(error.message)
@@ -36,7 +38,7 @@ export class Wallet {
     async readById({ userId, id }) {
         try {
             const wallet = await walletsMongoDbModel.findOne(
-                { userId: userId, id: id, status: true },
+                { userId: userId, _id: id, status: true },
                 { name: 1, balance: 1 }
             )
             return wallet
@@ -48,13 +50,11 @@ export class Wallet {
     async update({ userId, id, input }) {
         const {
             name,
-            amount
         } = input
 
         try {
-            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
+            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, _id: id, status: true }, {
                 name,
-                $inc: { balance: amount }
             }, {
                 new: true,
                 projection: {
@@ -71,7 +71,7 @@ export class Wallet {
 
     async delete({ userId, id }) {
         try {
-            const deletedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
+            const deletedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, _id: id, status: true }, {
                 status: false
             }, {
                 new: true,

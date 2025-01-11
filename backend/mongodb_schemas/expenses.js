@@ -20,6 +20,11 @@ export const expensesSchema = new mongoose.Schema({
         type: String,
         maxlength: 255,
     },
+    userId: {
+        type: mongoose.Types.ObjectId,
+        ref: 'users',
+        required: true
+    },
     walletId: {
         type: mongoose.Types.ObjectId,
         ref: 'wallets',

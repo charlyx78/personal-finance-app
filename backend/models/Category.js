@@ -1,3 +1,4 @@
+import { NotFoundError } from '../controllers/errors.js'
 import { categoriesMongoDbModel } from '../mongodb_schemas/categories.js'
 
 export class Category {
@@ -34,7 +35,7 @@ export class Category {
 
     async readById({ userId, id }) {
         try {
-            const categoryFound = await categoriesMongoDbModel.findOne({ userId: userId, id: id, status: true }, { userId: 0, status: 0 })
+            const categoryFound = await categoriesMongoDbModel.findOne({ userId: userId, _id: id, status: true }, { userId: 0, status: 0 })
             return categoryFound
         } catch (error) {
             throw new Error(error.message)
@@ -48,7 +49,7 @@ export class Category {
             color
         } = input
         try {
-            const updatedCategory = await categoriesMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
+            const updatedCategory = await categoriesMongoDbModel.findOneAndUpdate({ userId: userId, _id: id, status: true }, {
                 name,
                 description,
                 color
@@ -59,6 +60,10 @@ export class Category {
                 }
             })
 
+            if(!updatedCategory) {
+                throw new NotFoundError("Category doesn't exists or has been deleted")
+            }
+
             return updatedCategory
         } catch (error) {
             throw new Error(error.message)
@@ -67,7 +72,7 @@ export class Category {
 
     async delete({ userId, id }) {
         try {
-            const deletedCategory = await categoriesMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
+            const deletedCategory = await categoriesMongoDbModel.findOneAndUpdate({ userId: userId, _id: id, status: true }, {
                 status: false
             }, {
                 new: true,
@@ -75,6 +80,10 @@ export class Category {
                     userId: 0
                 }
             })
+
+            if(!deletedCategory) {
+                throw new NotFoundError("Category doesn't exists or has already been deleted")
+            }
 
             return deletedCategory
         } catch (error) {

@@ -32,7 +32,7 @@ export class WalletsController {
             const walletFound = await wallet.readById({ userId: req.user.id, id: req.params.id })
 
             if (!walletFound) {
-                return res.status(400).json({ error: 'Wallet not found' })
+                return res.status(404).json({ error: 'Wallet not found' })
             }
 
             return res.status(201).json({ wallet: walletFound })
@@ -45,6 +45,10 @@ export class WalletsController {
         try {
             const updatedWallet = await wallet.update({ userId: req.user.id, id: req.params.id, input: req.body })
 
+            if (!updatedWallet) {
+                return res.status(404).json({ error: "Wallet doesn't exists or has been deleted" })
+            }
+
             return res.status(200).json({ wallet: updatedWallet })
         } catch (error) {
             return res.status(500).json({ error: error.message })
@@ -54,6 +58,10 @@ export class WalletsController {
     delete = async (req, res) => {
         try {
             const deletedWallet = await wallet.delete({ userId: req.user.id, id: req.params.id })
+
+            if (!deletedWallet) {
+                return res.status(404).json({ error: "Wallet doesn't exists or has already been deleted" })
+            }
 
             return res.status(200).json({ wallet: deletedWallet })
         } catch (error) {

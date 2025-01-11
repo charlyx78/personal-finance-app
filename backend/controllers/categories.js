@@ -18,10 +18,10 @@ export class CategoriesController {
             const categories = await category.read({ userId: req.user.id })
 
             if (categories.length === 0) {
-                return res.status(404).json({ "message": "Categories not found" })
+                return res.status(404).json({ error: "Categories not found" })
             }
 
-            return res.status(200).json({ "message": "Categories found", categories: categories })
+            return res.status(200).json({ message: "Categories found", categories: categories })
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }
@@ -32,10 +32,10 @@ export class CategoriesController {
             const categoryFound = await category.readById({ userId: req.user.id, id: req.params.id })
 
             if (!categoryFound) {
-                return res.status(404).json({ "message": "Category not found" })
+                return res.status(404).json({ error: "Category not found" })
             }
 
-            return res.status(200).json({ "message": "Category found", categories: categoryFound })
+            return res.status(200).json({ message: "Category found", categories: categoryFound })
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }
@@ -45,7 +45,11 @@ export class CategoriesController {
         try {
             const updatedCategory = await category.update({ userId: req.user.id, id: req.params.id, input: req.body })
 
-            return res.status(200).json({ "message": "Category updated", category: updatedCategory })
+            if (!updatedCategory) {
+                return res.status(404).json({ error: "Category doesn't exists or has been deleted" })
+            }
+
+            return res.status(200).json({ message: "Category updated", category: updatedCategory })
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }
@@ -55,7 +59,11 @@ export class CategoriesController {
         try {
             const deletedCategory = await category.delete({ userId: req.user.id, id: req.params.id })
 
-            return res.status(200).json({ "message": "Category deleted", category: deletedCategory })
+            if (!deletedCategory) {
+                return res.status(404).json({ error: "Category doesn't exists or has already been deleted" })
+            }
+
+            return res.status(200).json({ message: "Category deleted", category: deletedCategory })
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }

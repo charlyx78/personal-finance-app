@@ -1,8 +1,8 @@
 import { NotFoundError } from "../controllers/errors.js"
-import { incomesMongoDbModel } from "../mongodb_schemas/incomes.js"
+import { expensesMongoDbModel } from '../mongodb_schemas/expenses.js'
 import { walletsMongoDbModel } from "../mongodb_schemas/wallets.js"
 
-export class Income {
+export class Expense {
     async create({ userId, input }) {
         const {
             amount,
@@ -12,7 +12,7 @@ export class Income {
             walletId
         } = input
 
-        const newIncome = {
+        const newExpense = {
             amount,
             categoryId,
             date,
@@ -21,24 +21,24 @@ export class Income {
             walletId
         }
 
-        const session = await incomesMongoDbModel.startSession()
+        const session = await expensesMongoDbModel.startSession()
         session.startTransaction()
 
         try {
-            const createdIncome = await incomesMongoDbModel.create([newIncome], { session })
+            const createdExpense = await expensesMongoDbModel.create([newExpense], { session })
 
             const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId, _id: walletId, status: true },
-                { $inc: { balance: amount } },
+                { $inc: { balance: amount * -1 } },
                 { new: true, session },
             )
 
             if (!updatedWallet) {
-                throw new Error("Wallet don't exist or has been deleted")
+                throw new NotFoundError("Wallet don't exist or has been deleted")
             }
 
             await session.commitTransaction()
 
-            return createdIncome
+            return createdExpense
         } catch (error) {
             await session.abortTransaction()
 
@@ -50,8 +50,8 @@ export class Income {
 
     async read({ userId }) {
         try {
-            const incomes = await incomesMongoDbModel.find({ userId: userId, status: true })
-            return incomes
+            const expenses = await expensesMongoDbModel.find({ userId: userId, status: true })
+            return expenses
         } catch (error) {
             throw new Error(error.message)
         }
@@ -59,8 +59,8 @@ export class Income {
 
     async readById({ userId, id }) {
         try {
-            const income = await incomesMongoDbModel.findOne({ userId: userId, _id: id, status: true })
-            return income
+            const expense = await expensesMongoDbModel.findOne({ userId: userId, _id: id, status: true })
+            return expense
         } catch (error) {
             throw new Error(error.message)
         }
@@ -68,8 +68,8 @@ export class Income {
 
     async readByWalletId({ userId, walletId }) {
         try {
-            const incomes = await incomesMongoDbModel.find({ userId: userId, walletId: walletId, status: true })
-            return incomes
+            const expenses = await expensesMongoDbModel.find({ userId: userId, walletId: walletId, status: true })
+            return expenses
         } catch (error) {
             throw new Error(error.message)
         }
@@ -84,11 +84,11 @@ export class Income {
             walletId
         } = input
 
-        const session = await incomesMongoDbModel.startSession()
+        const session = await expensesMongoDbModel.startSession()
         session.startTransaction()
 
         try {
-            const updatedIncome = await incomesMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
+            const updatedExpense = await expensesMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
                 amount,
                 categoryId,
                 date,
@@ -96,12 +96,12 @@ export class Income {
                 walletId
             }, { new: true, session })
 
-            if (!updatedIncome) {
-                throw new NotFoundError("Income doesn't exists or has been deleted")
+            if (!updatedExpense) {
+                throw new NotFoundError("Expense doesn't exists or has been deleted")
             }
 
             const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
-                $inc: { balance: amount },
+                $inc: { balance: amount * -1 },
             }, { new: true, session })
 
             if (!updatedWallet) {
@@ -110,7 +110,7 @@ export class Income {
 
             await session.commitTransaction()
 
-            return updatedIncome
+            return updatedExpense
         } catch (error) {
             await session.abortTransaction()
 
@@ -121,20 +121,20 @@ export class Income {
     }
 
     async delete({ userId, id }) {
-        const session = await incomesMongoDbModel.startSession()
+        const session = await expensesMongoDbModel.startSession()
         session.startTransaction()
 
         try {
-            const deletedIncome = await incomesMongoDbModel.findOneAndUpdate({ userId: userId, _id: id, status: true }, {
+            const deletedExpense = await expensesMongoDbModel.findOneAndUpdate({ userId: userId, _id: id, status: true }, {
                 status: false
             }, { new: true, session })
 
-            if (!deletedIncome) {
-                throw new NotFoundError("Income doesn't exists or has already been deleted")
+            if (!deletedExpense) {
+                throw new NotFoundError("Expense doesn't exists or has already been deleted")
             }
 
-            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, _id: deletedIncome.walletId, status: true }, {
-                $inc: { balance: deletedIncome.amount * -1 },
+            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, _id: deletedExpense.walletId, status: true }, {
+                $inc: { balance: deletedExpense.amount },
             }, { new: true, session })
 
             if (!updatedWallet) {
@@ -143,7 +143,7 @@ export class Income {
 
             await session.commitTransaction()
 
-            return deletedIncome
+            return deletedExpense
         } catch (error) {
             await session.abortTransaction()
 

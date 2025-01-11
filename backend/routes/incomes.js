@@ -11,6 +11,8 @@ export function createIncomesRouter() {
     incomesRouter.get("/", incomesController.read)
     incomesRouter.get("/:id", incomesController.readById)
     incomesRouter.get("/wallet/:id", incomesController.readByWalletId)
+    incomesRouter.patch("/:id", incomesController.update)
+    incomesRouter.delete("/:id", incomesController.delete)
 
     return incomesRouter
 }
