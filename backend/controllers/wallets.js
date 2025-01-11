@@ -31,6 +31,22 @@ export class WalletsController {
         }
     }
 
+    readById = async (req, res) => {
+        try {
+            const user = await AuthController.getLoggedUser(req, res)
+
+            const walletFound = await wallet.readById({ _id: req.params.id, userId: user.id })
+
+            if (!walletFound) {
+                return res.status(400).json({ error: 'Wallet not found' })
+            }
+
+            return res.status(201).json({ wallet: walletFound })
+        } catch (error) {
+            return res.status(500).json({ error: error.message })
+        }
+    }
+
     update = async (req, res) => {
         try {
             const updatedWallet = await wallet.update({ input: req.body, id: req.params.id })

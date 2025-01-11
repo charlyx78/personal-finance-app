@@ -20,7 +20,28 @@ export class CategoriesController {
             const user = await AuthController.getLoggedUser(req, res)
 
             const categories = await category.read({ userId: user.id })
+
+            if(categories.length === 0) {
+                return res.status(404).json({ "message": "Categories not found" })
+            }
+
             return res.status(200).json({ "message": "Categories found", categories: categories })
+        } catch (error) {
+            return res.status(500).json({ error: error.message })
+        }
+    }
+
+    readById = async (req, res) => {
+        try {
+            const user = await AuthController.getLoggedUser(req, res)
+
+            const categoryFound = await category.readById({ id: req.params.id, userId: user.id })
+
+            if(!categoryFound) {
+                return res.status(404).json({ "message": "Category not found" })
+            }
+
+            return res.status(200).json({ "message": "Category found", categories: categoryFound })
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }

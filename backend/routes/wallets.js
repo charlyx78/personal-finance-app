@@ -8,6 +8,7 @@ export function createWalletsRouter() {
 
     walletRouter.post('/', walletsController.create)
     walletRouter.get('/', walletsController.read)
+    walletRouter.get('/:id', walletsController.readById)
     walletRouter.patch('/:id', walletsController.update)
     walletRouter.delete('/:id', walletsController.delete)
 

@@ -1,4 +1,4 @@
-import { walletsMongoDBModel } from "../mongodb_schemas/wallets.js"
+import { walletsMongoDbModel } from "../mongodb_schemas/wallets.js"
 
 export class Wallet {
     async create({ input, userId }) {
@@ -14,7 +14,7 @@ export class Wallet {
         }
 
         try {
-            const walletCreated = await walletsMongoDBModel.create(newWallet)
+            const walletCreated = await walletsMongoDbModel.create(newWallet)
             return walletCreated
         } catch (error) {
             throw new Error(error.message)
@@ -23,11 +23,23 @@ export class Wallet {
 
     async read({ userId }) {
         try {
-            const wallets = await walletsMongoDBModel.find(
+            const wallets = await walletsMongoDbModel.find(
                 { userId: userId, status: true },
                 { name: 1, balance: 1 }
             )
             return wallets
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
+
+    async readById({ userId, id }) {
+        try {
+            const wallet = await walletsMongoDbModel.findOne(
+                { id: id, userId: userId, status: true },
+                { name: 1, balance: 1 }
+            )
+            return wallet
         } catch (error) {
             throw new Error(error.message)
         }
@@ -40,7 +52,7 @@ export class Wallet {
         } = input
 
         try {
-            const updatedWallet = await walletsMongoDBModel.findByIdAndUpdate(id, {
+            const updatedWallet = await walletsMongoDbModel.findByIdAndUpdate(id, {
                 name,
                 $inc: { balance: amount }
             }, {
@@ -59,7 +71,7 @@ export class Wallet {
 
     async delete({ id }) {
         try {
-            const deletedWallet = await walletsMongoDBModel.findByIdAndUpdate(id, {
+            const deletedWallet = await walletsMongoDbModel.findByIdAndUpdate(id, {
                 status: false
             }, {
                 new: true,

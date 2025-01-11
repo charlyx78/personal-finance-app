@@ -32,6 +32,15 @@ export class Category {
         }
     }
 
+    async readById({ userId, id }) {
+        try {
+            const categoryFound = await categoriesMongoDbModel.findOne({ id: id, userId: userId, status: true }, { userId: 0, status: 0 })
+            return categoryFound
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
+
     async update({ input, id }) {
         const {
             name,

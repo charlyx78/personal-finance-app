@@ -7,6 +7,7 @@ import { createAuthRouter } from './routes/auth.js'
 import { createUsersRouter } from './routes/users.js'
 import { createWalletsRouter } from './routes/wallets.js';
 import { createCategoriesRouter } from './routes/categories.js';
+import { createIncomesRouter } from './routes/incomes.js';
 import { verifySession } from './middlewares/verifySession.js';
 
 const app = express()
@@ -19,6 +20,7 @@ app.use('/auth', createAuthRouter())
 app.use('/users', createUsersRouter())
 app.use('/wallets', verifySession, createWalletsRouter())
 app.use('/categories', verifySession, createCategoriesRouter())
+app.use('/incomes', verifySession, createIncomesRouter())
 
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`)

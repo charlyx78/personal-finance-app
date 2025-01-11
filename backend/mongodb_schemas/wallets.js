@@ -28,4 +28,4 @@ walletsSchema.index({ name: 1, userId: 1 }, { unique: true, partialFilterExpress
 
 walletsSchema.post('save', handleMongoosePostSaveErrors)
 
-export const walletsMongoDBModel = mongoose.model('wallets', walletsSchema)
+export const walletsMongoDbModel = mongoose.model('wallets', walletsSchema)
