@@ -1,0 +1,26 @@
+import { iUsers, userMongoDbModel } from "../schemas/mongodb/users";
+import bcrypt from 'bcrypt'
+import { AuthenticationError, NotFoundError } from "../controllers/errors";
+import { SECRET_JWT_KEY } from "../config"
+import jwt from 'jsonwebtoken'
+
+export class Auth {
+    async login(email: string, password: string) {
+        const user = await userMongoDbModel.findOne({ email })
+
+        if (!user) throw new NotFoundError('User not found')
+
+        const isValid = await bcrypt.compare(password, user.password)
+
+        if (!isValid) throw new AuthenticationError('Email or password are not valid. Please try again')
+
+        const userLogged = {
+            id: user._id,
+            name: user.name,
+            lastName: user.lastName,
+            email: user.email
+        }
+
+        return userLogged
+    }
+}
