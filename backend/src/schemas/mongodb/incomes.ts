@@ -1,6 +1,6 @@
 import {Model, Schema, model} from "mongoose";
 import { iTransactions } from "../../interfaces/transactions";
-import { handleMongoosePostSaveErrors } from "../middlewares/handleMongoosePostSaveErrors";
+import { handleMongoosePostSaveErrors } from "../../middlewares/handleMongoosePostSaveErrors";
 
 type IncomesModel = Model<iTransactions>
 

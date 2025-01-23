@@ -1,7 +1,6 @@
 import { iUsers, userMongoDbModel } from "../schemas/mongodb/users";
 import bcrypt from 'bcrypt'
 import { AuthenticationError, NotFoundError } from "../controllers/errors";
-import { SECRET_JWT_KEY } from "../config"
 import jwt from 'jsonwebtoken'
 
 export class Auth {

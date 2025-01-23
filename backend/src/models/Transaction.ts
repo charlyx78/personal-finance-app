@@ -1,10 +1,10 @@
 import { NotFoundError } from "../controllers/errors"
-import { iTransactions, iTransactionMovements } from "../interfaces/transactions"
+import { iTransactions, iTransactionMovements, iTransactionsInput, iTransactionsOutput } from "../interfaces/transactions"
 import { Model, Schema } from "mongoose"
 import { walletsMongoDbModel } from "../schemas/mongodb/wallets"
 import { ModelBase } from "./ModelBase.js"
 
-export class Transaction extends ModelBase<iTransactions> {
+export class Transaction extends ModelBase<iTransactionsInput, iTransactionsOutput> {
 
     private mongoDbModel: Model<iTransactions>
     private movement: iTransactionMovements
@@ -15,21 +15,22 @@ export class Transaction extends ModelBase<iTransactions> {
         this.movement = movement
     }
 
-    async create(userId: Schema.Types.ObjectId, input: iTransactions) {
+    async create(input: iTransactionsInput): Promise<iTransactionsOutput> {
         const {
             amount,
             categoryId,
             date,
             notes,
+            userId,
             walletId
-        } = input
+        }: iTransactionsInput = input
 
         const newTransaction = {
             amount,
             categoryId,
             date,
             notes,
-            userId: userId,
+            userId,
             walletId
         }
 
@@ -38,6 +39,16 @@ export class Transaction extends ModelBase<iTransactions> {
 
         try {
             const createdTransaction = await this.mongoDbModel.create([newTransaction], { session })
+
+            const transactionOutput: iTransactionsOutput = {
+                _id: createdTransaction[0]._id,
+                amount: createdTransaction[0].amount,
+                categoryId: createdTransaction[0].categoryId,
+                date: createdTransaction[0].date,
+                notes: createdTransaction[0].notes,
+                walletId: createdTransaction[0].walletId,
+                updatedAt: createdTransaction[0].updatedAt
+            }
 
             let walletUpdateAmount
             if (this.movement === 'income') {
@@ -58,7 +69,7 @@ export class Transaction extends ModelBase<iTransactions> {
 
             await session.commitTransaction()
 
-            return createdTransaction[0]
+            return transactionOutput
         } catch (error: any) {
             await session.abortTransaction()
 
@@ -68,47 +79,47 @@ export class Transaction extends ModelBase<iTransactions> {
         }
     }
 
-    async read(userId: Schema.Types.ObjectId) {
+    async read(userId: string): Promise<Partial<iTransactionsOutput[]>> {
         try {
-            const transactions = await this.mongoDbModel.find({ userId: userId, status: true })
+            const transactions: Partial<iTransactionsOutput[]> = await this.mongoDbModel.find({ userId: userId, status: true })
             return transactions
         } catch (error: any) {
             throw new Error(error.message)
         }
     }
 
-    async readById(userId: Schema.Types.ObjectId, id: Schema.Types.ObjectId) {
+    async readById(id: string): Promise<Partial<iTransactionsOutput | null>> {
         try {
-            const transaction = await this.mongoDbModel.findOne({ userId: userId, _id: id, status: true })
+            const transaction: Partial<iTransactionsOutput | null> = await this.mongoDbModel.findOne({ _id: id, status: true })
             return transaction
         } catch (error: any) {
             throw new Error(error.message)
         }
     }
 
-    async readByWalletId(userId: Schema.Types.ObjectId, walletId: Schema.Types.ObjectId) {
+    async readByWalletId(id: string): Promise<Partial<iTransactionsOutput[]>> {
         try {
-            const transactions = await this.mongoDbModel.find({ userId: userId, walletId: walletId, status: true })
+            const transactions: Partial<iTransactionsOutput[]> = await this.mongoDbModel.find({ walletId: id, status: true })
             return transactions
         } catch (error: any) {
             throw new Error(error.message)
         }
     }
 
-    async update(userId: Schema.Types.ObjectId, id: Schema.Types.ObjectId, input: iTransactions) {
+    async update(id: string, input: iTransactionsInput): Promise<Partial<iTransactionsOutput | null>> {
         const {
             amount,
             categoryId,
             date,
             notes,
             walletId
-        } = input
+        }: iTransactionsInput = input
 
         const session = await this.mongoDbModel.startSession()
         session.startTransaction()
 
         try {
-            const updatedTransaction = await this.mongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
+            const updatedTransaction: Partial<iTransactionsOutput | null> = await this.mongoDbModel.findOneAndUpdate({ id: id, status: true }, {
                 amount,
                 categoryId,
                 date,
@@ -128,7 +139,7 @@ export class Transaction extends ModelBase<iTransactions> {
                 walletUpdateAmount = -amount
             }
 
-            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, id: id, status: true }, {
+            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ id: id, status: true }, {
                 $inc: { balance: walletUpdateAmount },
             }, { new: true, session })
 
@@ -148,12 +159,12 @@ export class Transaction extends ModelBase<iTransactions> {
         }
     }
 
-    async delete(userId: Schema.Types.ObjectId, id: Schema.Types.ObjectId) {
+    async delete(id: string): Promise<Partial<iTransactionsOutput | null>> {
         const session = await this.mongoDbModel.startSession()
         session.startTransaction()
 
         try {
-            const deletedTransaction = await this.mongoDbModel.findOneAndUpdate({ userId: userId, _id: id, status: true }, {
+            const deletedTransaction: Partial<iTransactionsOutput | null> = await this.mongoDbModel.findOneAndUpdate({ _id: id, status: true }, {
                 status: false
             }, { new: true, session })
 
@@ -161,7 +172,7 @@ export class Transaction extends ModelBase<iTransactions> {
                 throw new NotFoundError("transaction doesn't exists or has already been deleted")
             }
 
-            const deletedTransactionAmount: number = parseFloat(deletedTransaction.amount.toString())
+            const deletedTransactionAmount: number = parseFloat(deletedTransaction.amount!.toString())
 
             let walletUpdateAmount
             if (this.movement === 'income') {
@@ -171,7 +182,7 @@ export class Transaction extends ModelBase<iTransactions> {
                 walletUpdateAmount = deletedTransactionAmount
             }
 
-            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, _id: deletedTransaction.walletId, status: true }, {
+            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ _id: deletedTransaction.walletId, status: true }, {
                 $inc: { balance: walletUpdateAmount },
             }, { new: true, session })
 

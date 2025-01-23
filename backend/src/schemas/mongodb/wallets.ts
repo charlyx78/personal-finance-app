@@ -1,12 +1,6 @@
 import {Model,Schema,model} from "mongoose";
-import { handleMongoosePostSaveErrors } from "../../middlewares/handleMongoosePostSaveErrors.js";
-
-export interface iWallets {
-    name: string,
-    balance: Schema.Types.Decimal128,
-    userId: Schema.Types.ObjectId,
-    status?: boolean
-}
+import { handleMongoosePostSaveErrors } from "../../middlewares/handleMongoosePostSaveErrors"
+import { iWallets } from "../../interfaces/wallets";
 
 type WalletsModel = Model<iWallets>
 

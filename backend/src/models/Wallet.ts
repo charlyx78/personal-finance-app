@@ -1,33 +1,34 @@
 import { walletsMongoDbModel } from "../schemas/mongodb/wallets"
 import { Schema } from "mongoose"
-import { iWallets } from "../schemas/mongodb/wallets"
 import { ModelBase } from "./ModelBase"
+import { iWalletsInput, iWalletsOutput } from "../interfaces/wallets"
 
-export class Wallet extends ModelBase<iWallets> {
+export class Wallet extends ModelBase<iWalletsInput, iWalletsOutput> {
 
-    async create(userId: Schema.Types.ObjectId, input: iWallets) {
+    async create(input: iWalletsInput): Promise<Partial<iWalletsOutput>> {
         const {
             name,
-            balance
-        } = input
+            balance,
+            userId
+        }: iWalletsInput = input
 
         const newWallet = {
-            name: name,
-            balance: balance,
-            userId: userId
+            name,
+            balance,
+            userId
         }
 
         try {
-            const walletCreated = await walletsMongoDbModel.create(newWallet)
+            const walletCreated: Partial<iWalletsOutput> = await walletsMongoDbModel.create(newWallet)
             return walletCreated
         } catch (error: any) {
             throw new Error(error.message)
         }
     }
 
-    async read(userId: Schema.Types.ObjectId) {
+    async read(userId: string): Promise<Partial<iWalletsOutput[]>> {
         try {
-            const wallets = await walletsMongoDbModel.find(
+            const wallets: Partial<iWalletsOutput[]> = await walletsMongoDbModel.find(
                 { userId: userId, status: true },
                 { name: 1, balance: 1 }
             )
@@ -38,10 +39,10 @@ export class Wallet extends ModelBase<iWallets> {
         }
     }
 
-    async readById(userId: Schema.Types.ObjectId, id: Schema.Types.ObjectId) {
+    async readById(id: string): Promise<Partial<iWalletsOutput | null>> {
         try {
-            const wallet = await walletsMongoDbModel.findOne(
-                { userId: userId, _id: id, status: true },
+            const wallet: Partial<iWalletsOutput | null> = await walletsMongoDbModel.findOne(
+                { _id: id, status: true },
                 { name: 1, balance: 1 }
             )
             return wallet
@@ -50,13 +51,13 @@ export class Wallet extends ModelBase<iWallets> {
         }
     }
 
-    async update(userId: Schema.Types.ObjectId, id: Schema.Types.ObjectId, input: iWallets) {
+    async update(id: string, input: Partial<iWalletsInput>) : Promise<Partial<iWalletsOutput | null>> {
         const {
             name,
-        } = input
+        }: Partial<iWalletsInput> = input
 
         try {
-            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, _id: id, status: true }, {
+            const updatedWallet: Partial<iWalletsOutput | null> = await walletsMongoDbModel.findOneAndUpdate({ _id: id, status: true }, {
                 name,
             }, {
                 new: true,
@@ -72,9 +73,9 @@ export class Wallet extends ModelBase<iWallets> {
         }
     }
 
-    async delete(userId: Schema.Types.ObjectId, id: Schema.Types.ObjectId) {
+    async delete(id: string): Promise<Partial<iWalletsOutput | null>> {
         try {
-            const deletedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: userId, _id: id, status: true }, {
+            const deletedWallet: Partial<iWalletsOutput | null> = await walletsMongoDbModel.findOneAndUpdate({ _id: id, status: true }, {
                 status: false
             }, {
                 new: true,

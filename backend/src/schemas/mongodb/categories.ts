@@ -1,13 +1,6 @@
 import { Model, Schema, model } from "mongoose";
-import { handleMongoosePostSaveErrors } from "../middlewares/handleMongoosePostSaveErrors";
-
-export interface iCategories {
-    name: string,
-    description?: string,
-    color: string,
-    userId: Schema.Types.ObjectId,
-    status?: boolean
-}
+import { iCategories } from "../../interfaces/categories";
+import { handleMongoosePostSaveErrors } from "../../middlewares/handleMongoosePostSaveErrors";
 
 type CategoryModel = Model<iCategories>
 

@@ -1,21 +1,23 @@
+import { Request, Response } from 'express'
 import { User } from '../models/User.js'
-import { validateUser } from '../schemas/zod/users.js'
+// import { validateUser } from '../schemas/zod/users.js'
 
 const user = new User()
 
 export class UserController {
-    create = async (req, res) => {
-        const result = validateUser(req.body)
+    create = async (req: Request, res: Response): Promise<void> => {
+        // const result = validateUser(req.body)
 
-        if (!result.success) {
-            return res.status(400).json({ error: JSON.parse(result.error.message) })
-        }
+        // if (!result.success) {
+        //     res.status(400).json({ error: JSON.parse(result.error.message) })
+        // }
 
         try {
-            const newUser = await user.create({ input: result.data })
-            return res.status(201).json({ user: newUser })
+            // const newUser = await user.create(result.data!)
+            const newUser = await user.create(req.body)
+            res.status(201).json({ user: newUser })
         } catch (error) {
-            return res.status(500).json({ error: error })
+            res.status(500).json({ error: error })
         }
     }
 }

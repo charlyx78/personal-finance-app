@@ -2,7 +2,7 @@ import express, { Application, json } from 'express'
 import mongoose from 'mongoose'
 import cookieParser from "cookie-parser";
 
-import { PORT, MONGO_URI } from './config'
+import { config } from './config'
 import { createAuthRouter } from './routes/auth'
 import { createUsersRouter } from './routes/users'
 import { createWalletsRouter } from './routes/wallets';
@@ -24,11 +24,11 @@ app.use('/categories', verifySession, createCategoriesRouter())
 app.use('/incomes', verifySession, createIncomesRouter())
 app.use('/expenses', verifySession, createExpensesRouter())
 
-app.listen(PORT, () => {
-    console.log(`Server running on port: ${PORT}`)
+app.listen(config.PORT, () => {
+    console.log(`Server running on port: ${config.PORT}`)
 })
 
-mongoose.connect(MONGO_URI).then(() => {
+mongoose.connect(config.MONGO_URI!).then(() => {
     console.log('Connected to MongoDB!')
 }).catch((error) => {
     console.log('Error al conectarse con la base de datos: ', error)

@@ -1,5 +1,5 @@
 import { Model, Schema, model } from "mongoose";
-import { handleMongoosePostSaveErrors } from "../../middlewares/handleMongoosePostSaveErrors.js"
+import { handleMongoosePostSaveErrors } from "../../middlewares/handleMongoosePostSaveErrors"
 
 export interface iUsers {
     name: string,

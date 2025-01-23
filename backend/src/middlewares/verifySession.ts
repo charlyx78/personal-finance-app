@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
-import { SECRET_JWT_KEY } from '../config'
-import { Request, Response } from 'express'
-import { Schema } from 'mongoose'
+import { config } from '../config'
+import { NextFunction, Request, Response } from 'express'
 
 declare global {
     namespace Express {
@@ -25,18 +24,19 @@ interface iUserData {
     }
 }
 
-export const verifySession = (req: Request, res: Response, next: Function) => {
+export const verifySession = (req: Request, res: Response, next: NextFunction): void => {
     const token = req.cookies.access_token
-    if (!token)
-        return res.status(403).json({ message: 'Access not authorized' })
+    if (!token) {
+        res.status(403).json({ message: 'Access not authorized' })
+        return
+    }
 
     try {
-        const userData = jwt.verify(token, SECRET_JWT_KEY) as iUserData
-        if (!req.user) {
-            req.user = userData.user
-        }
+        const userData = jwt.verify(token, config.SECRET_JWT_KEY!) as iUserData
+        req.user = userData.user
         next()
     } catch (error) {
-        return res.status(401).json({ message: 'Access not authorized' })
+        res.status(401).json({ message: 'Access not authorized' })
+        return
     }
 }

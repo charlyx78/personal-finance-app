@@ -1,7 +1,7 @@
 import { iUsers, userMongoDbModel } from '../schemas/mongodb/users'
 import { Schema } from 'mongoose'
 import bcrypt from 'bcrypt'
-import { SALT_ROUNDS } from '../config'
+import { config } from '../config'
 import { ModelBase } from './ModelBase'
 
 export class User {
@@ -14,7 +14,7 @@ export class User {
             password
         } = input
 
-        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
+        const hashedPassword = await bcrypt.hash(password, config.SALT_ROUNDS)
 
         const newUser = {
             name,

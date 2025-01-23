@@ -8,7 +8,6 @@ interface EnvVariables {
     SALT_ROUNDS: number,
     SECRET_JWT_KEY?: string, 
     NODE_ENV?: string 
-
 }
 
 const {

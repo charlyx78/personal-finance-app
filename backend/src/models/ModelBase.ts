@@ -1,9 +1,9 @@
 import { Schema } from "mongoose"
 
-export abstract class ModelBase<T> {
-    abstract create(userId: string, input: Partial<T>): Promise<Partial<T>>
-    abstract read(userId: string): Promise<Partial<T>[] | null>
-    abstract readById(userId: string, id: string): Promise<Partial<T> | null>
-    abstract update(userId: string, id: string, input: T): Promise<Partial<T> | null>
-    abstract delete(userId: string, id: string): Promise<Partial<T> | null>
+export abstract class ModelBase<Input, Output> {
+    abstract create(input: Input): Promise<Partial<Output>>
+    abstract read(userId: string): Promise<Partial<Output[]>>
+    abstract readById(id: string): Promise<Partial<Output | null>>
+    abstract update(id: string, input: Partial<Input>): Promise<Partial<Output | null>>
+    abstract delete(id: string): Promise<Partial<Output | null>>
 }

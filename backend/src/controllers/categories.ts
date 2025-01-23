@@ -1,85 +1,74 @@
 import { Schema } from "mongoose"
 import { Category } from "../models/Category.js"
-import { iCategories } from "../schemas/mongodb/categories.js"
 import { AuthController } from "./auth.js"
 import { Request, Response } from "express"
+import { iCategoriesInput } from "../interfaces/categories.js"
 
 const category = new Category()
 
 export class CategoriesController {
-    create = async (req: Request, res: Response): Promise<Response> => {
-        const {
-            name,
-            description,
-            color
-        } : iCategories = req.body 
+    create = async (req: Request, res: Response): Promise<void> => {
         try {
-            const newCategory = await category.create(req.user!.id, req.body)
-            return res.status(201).json({ message: "Category created successfully!", category: newCategory })
+            const newCategory = await category.create(req.body)
+            res.status(201).json({ message: "Category created successfully!", category: newCategory })
         } catch (error: any) {
-            return res.status(500).json({ error: error.message })
+            res.status(500).json({ error: error.message })
         }
     }
 
-    read = async (req: Request, res: Response): Promise<Response> => {
+    read = async (req: Request, res: Response): Promise<void> => {
         try {
             const categories = await category.read(req.user!.id)
 
             if (categories.length === 0) {
-                return res.status(404).json({ error: "Categories not found" })
+                res.status(404).json({ error: "Categories not found" })
             }
 
-            return res.status(200).json({ message: "Categories found", categories: categories })
+            res.status(200).json({ message: "Categories found", categories: categories })
         } catch (error: any) {
-            return res.status(500).json({ error: error.message })
+            res.status(500).json({ error: error.message })
         }
     }
 
-    readById = async (req: Request<{id: string}>, res: Response): Promise<Response> => {
+    readById = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
         try {
-            const categoryFound = await category.readById(req.user!.id, req.params.id)
+            const categoryFound = await category.readById(req.params.id)
 
             if (!categoryFound) {
-                return res.status(404).json({ error: "Category not found" })
+                res.status(404).json({ error: "Category not found" })
             }
 
-            return res.status(200).json({ message: "Category found", categories: categoryFound })
+            res.status(200).json({ message: "Category found", categories: categoryFound })
         } catch (error: any) {
-            return res.status(500).json({ error: error.message })
+            res.status(500).json({ error: error.message })
         }
     }
 
-    update = async (req: Request<{id: string}>, res: Response): Promise<Response> => {
-        const {
-            name,
-            description,
-            color
-        } : iCategories = req.body 
-
+    update = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
         try {
-            const updatedCategory = await category.update(req.user!.id, req.params.id, req.body)
+            const updatedCategory = await category.update(req.params.id, req.body)
 
             if (!updatedCategory) {
-                return res.status(404).json({ error: "Category doesn't exists or has been deleted" })
+                res.status(404).json({ error: "Category doesn't exists or has been deleted" })
             }
 
-            return res.status(200).json({ message: "Category updated", category: updatedCategory })
+            res.status(200).json({ message: "Category updated", category: updatedCategory })
         } catch (error: any) {
-            return res.status(500).json({ error: error.message })
+            res.status(500).json({ error: error.message })
         }
     }
 
-    delete = async (req: Request<{id: string}>, res: Response): Promise<Response> => {
+    delete = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
         try {
-            const deletedCategory = await category.delete(req.user!.id, req.params.id)
+            const deletedCategory = await category.delete(req.params.id)
 
             if (!deletedCategory) {
-                return res.status(404).json({ error: "Category doesn't exists or has already been deleted" })
+                res.status(404).json({ error: "Category doesn't exists or has already been deleted" })
             }
 
-            return res.status(200).json({ message: "Category deleted", category: deletedCategory })
+            res.status(200).json({ message: "Category deleted", category: deletedCategory })
         } catch (error: any) {
-            return res.status(500).json({ error: error.message })
+            res.status(500).json({ error: error.message })
         }
     }
 }

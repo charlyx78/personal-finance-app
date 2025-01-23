@@ -3,7 +3,6 @@ import { AuthController } from "../controllers/auth"
 
 export function createAuthRouter() {
     const authRouter = Router()
-
     const authController = new AuthController()
 
     authRouter.post('/login', authController.login)

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "build": "npx tsc",
-    "dev": "node --watch app.js",
+    "dev": "node --watch dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
