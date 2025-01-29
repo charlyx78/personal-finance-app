@@ -12,8 +12,12 @@ const walletsSchema = new Schema<iWallets, WalletsModel>({
     },
     balance: {
         type: Schema.Types.Decimal128,
+        required: true
+    },
+    type: {
+        type: String,
+        enum: ['Debit', 'Credit'],
         required: true,
-        min: 1,
     },
     userId: {
         type: Schema.Types.ObjectId,

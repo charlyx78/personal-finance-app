@@ -6,20 +6,8 @@ import { iWalletsInput, iWalletsOutput } from "../interfaces/wallets"
 export class Wallet extends ModelBase<iWalletsInput, iWalletsOutput> {
 
     async create(input: iWalletsInput): Promise<Partial<iWalletsOutput>> {
-        const {
-            name,
-            balance,
-            userId
-        }: iWalletsInput = input
-
-        const newWallet = {
-            name,
-            balance,
-            userId
-        }
-
         try {
-            const walletCreated: Partial<iWalletsOutput> = await walletsMongoDbModel.create(newWallet)
+            const walletCreated: Partial<iWalletsOutput> = await walletsMongoDbModel.create(input)
             return walletCreated
         } catch (error: any) {
             throw new Error(error.message)
@@ -30,7 +18,7 @@ export class Wallet extends ModelBase<iWalletsInput, iWalletsOutput> {
         try {
             const wallets: Partial<iWalletsOutput[]> = await walletsMongoDbModel.find(
                 { userId: userId, status: true },
-                { name: 1, balance: 1 }
+                { name: 1, balance: 1, type: 1 }
             )
 
             return wallets
@@ -43,7 +31,7 @@ export class Wallet extends ModelBase<iWalletsInput, iWalletsOutput> {
         try {
             const wallet: Partial<iWalletsOutput | null> = await walletsMongoDbModel.findOne(
                 { _id: id, status: true },
-                { name: 1, balance: 1 }
+                { name: 1, balance: 1, type: true }
             )
             return wallet
         } catch (error: any) {
@@ -52,13 +40,9 @@ export class Wallet extends ModelBase<iWalletsInput, iWalletsOutput> {
     }
 
     async update(id: string, input: Partial<iWalletsInput>) : Promise<Partial<iWalletsOutput | null>> {
-        const {
-            name,
-        }: Partial<iWalletsInput> = input
-
         try {
             const updatedWallet: Partial<iWalletsOutput | null> = await walletsMongoDbModel.findOneAndUpdate({ _id: id, status: true }, {
-                name,
+                input
             }, {
                 new: true,
                 projection: {
@@ -82,6 +66,7 @@ export class Wallet extends ModelBase<iWalletsInput, iWalletsOutput> {
                 projection: {
                     name: 1,
                     balance: 1,
+                    type: 1,
                     status: 1
                 }
             })

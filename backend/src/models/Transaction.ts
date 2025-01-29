@@ -16,29 +16,11 @@ export class Transaction extends ModelBase<iTransactionsInput, iTransactionsOutp
     }
 
     async create(input: iTransactionsInput): Promise<iTransactionsOutput> {
-        const {
-            amount,
-            categoryId,
-            date,
-            notes,
-            userId,
-            walletId
-        }: iTransactionsInput = input
-
-        const newTransaction = {
-            amount,
-            categoryId,
-            date,
-            notes,
-            userId,
-            walletId
-        }
-
         const session = await this.mongoDbModel.startSession()
         session.startTransaction()
 
         try {
-            const createdTransaction = await this.mongoDbModel.create([newTransaction], { session })
+            const createdTransaction = await this.mongoDbModel.create([input], { session })
 
             const transactionOutput: iTransactionsOutput = {
                 _id: createdTransaction[0]._id,
@@ -52,13 +34,13 @@ export class Transaction extends ModelBase<iTransactionsInput, iTransactionsOutp
 
             let walletUpdateAmount
             if (this.movement === 'income') {
-                walletUpdateAmount = amount
+                walletUpdateAmount = input.amount
             }
             if (this.movement === 'expense') {
-                walletUpdateAmount = -amount
+                walletUpdateAmount = -input.amount
             }
 
-            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId, _id: walletId, status: true },
+            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ userId: input.userId, _id: input.walletId, status: true },
                 { $inc: { balance: walletUpdateAmount } },
                 { new: true, session },
             )
@@ -106,25 +88,17 @@ export class Transaction extends ModelBase<iTransactionsInput, iTransactionsOutp
         }
     }
 
-    async update(id: string, input: iTransactionsInput): Promise<Partial<iTransactionsOutput | null>> {
-        const {
-            amount,
-            categoryId,
-            date,
-            notes,
-            walletId
-        }: iTransactionsInput = input
-
+    async update(id: string, input: Partial<iTransactionsInput>): Promise<Partial<iTransactionsOutput | null>> {
         const session = await this.mongoDbModel.startSession()
         session.startTransaction()
 
         try {
             const updatedTransaction: Partial<iTransactionsOutput | null> = await this.mongoDbModel.findOneAndUpdate({ id: id, status: true }, {
-                amount,
-                categoryId,
-                date,
-                notes,
-                walletId
+                amount: input.amount!,
+                categoryId: input.categoryId,
+                date: input.date,
+                notes: input.notes,
+                walletId: input.walletId
             }, { new: true, session })
 
             if (!updatedTransaction) {
@@ -133,10 +107,10 @@ export class Transaction extends ModelBase<iTransactionsInput, iTransactionsOutp
 
             let walletUpdateAmount
             if (this.movement === 'income') {
-                walletUpdateAmount = amount
+                walletUpdateAmount = input.amount!
             }
             if (this.movement === 'expense') {
-                walletUpdateAmount = -amount
+                walletUpdateAmount = -input.amount!
             }
 
             const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ id: id, status: true }, {

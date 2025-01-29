@@ -1,13 +1,30 @@
 import { Income } from "../models/Income.js";
 import { NotFoundError } from "./errors.js";
 import { Request, Response } from "express";
+import { iTransactionsInput } from "../interfaces/transactions.js";
 
 const income = new Income()
 
 export class IncomesController {
     create = async (req: Request, res: Response) => {
+        const {
+            amount,
+            categoryId,
+            date,
+            notes,
+            walletId
+        } = req.body
+
+        const incomeData: iTransactionsInput = {
+            amount,
+            categoryId,
+            date,
+            notes,
+            userId: req.user!.id,
+            walletId
+        }
         try {
-            const newIncome = await income.create(req.body)
+            const newIncome = await income.create(incomeData)
 
             res.status(201).json({ message: 'Income created successfully', income: newIncome })
         } catch (error: any) {
@@ -58,8 +75,24 @@ export class IncomesController {
     }
 
     update = async (req: Request<{ id: string }>, res: Response) => {
+        const {
+            amount,
+            categoryId,
+            date,
+            notes,
+            walletId
+        } = req.body
+
+        const incomeData: Partial<iTransactionsInput> = {
+            amount,
+            categoryId,
+            date,
+            notes,
+            walletId
+        }
+
         try {
-            const updatedIncome = await income.update(req.params.id, req.body)
+            const updatedIncome = await income.update(req.params.id, incomeData)
 
             res.status(200).json({ message: "Income updated successfully", income: updatedIncome })
         } catch (error: any) {

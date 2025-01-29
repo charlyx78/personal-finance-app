@@ -8,8 +8,21 @@ const category = new Category()
 
 export class CategoriesController {
     create = async (req: Request, res: Response): Promise<void> => {
+        const {
+            name,
+            description,
+            color,
+        }: iCategoriesInput = req.body
+
+        const categoryData = {
+            name,
+            description,
+            color,
+            userId: req.user!.id
+        }
+
         try {
-            const newCategory = await category.create(req.body)
+            const newCategory = await category.create(categoryData)
             res.status(201).json({ message: "Category created successfully!", category: newCategory })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
@@ -45,8 +58,20 @@ export class CategoriesController {
     }
 
     update = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+        const {
+            name,
+            description,
+            color
+        }: Partial<iCategoriesInput> = req.body
+
+        const categoryData: Partial<iCategoriesInput> = {
+            name,
+            description,
+            color
+        }
+
         try {
-            const updatedCategory = await category.update(req.params.id, req.body)
+            const updatedCategory = await category.update(req.params.id, categoryData)
 
             if (!updatedCategory) {
                 res.status(404).json({ error: "Category doesn't exists or has been deleted" })

@@ -1,12 +1,26 @@
 import { Wallet } from "../models/Wallet.js"
+import { iWalletsInput } from "../interfaces/wallets.js" 
 import { Response, Request } from "express"
 
 const wallet = new Wallet()
 
 export class WalletsController {
     create = async (req: Request, res: Response): Promise<void> => {
+        const {
+            name,
+            balance,
+            type,
+        } = req.body
+
+        const walletData: iWalletsInput = {
+            name,
+            balance,
+            type,
+            userId: req.user!.id
+        }
+
         try {
-            const newWallet = await wallet.create(req.body)
+            const newWallet = await wallet.create(walletData)
             res.status(201).json({ wallet: newWallet })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
@@ -42,8 +56,16 @@ export class WalletsController {
     }
 
     update = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+        const {
+            name,
+        } = req.body
+
+        const walletData: Partial<iWalletsInput>  = {
+            name: name
+        }
+
         try {
-            const updatedWallet = await wallet.update(req.params.id, req.body)
+            const updatedWallet = await wallet.update(req.params.id, walletData)
 
             if (!updatedWallet) {
                 res.status(404).json({ error: "Wallet doesn't exists or has been deleted" })

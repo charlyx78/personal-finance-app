@@ -6,22 +6,8 @@ import { ModelBase } from './ModelBase'
 export class Category extends ModelBase<iCategoriesInput, iCategoriesOutput> {
 
     async create(input: iCategoriesInput): Promise<Partial<iCategoriesOutput>> {
-        const {
-            name,
-            description,
-            color,
-            userId
-        }: iCategoriesInput = input
-
-        const newCategory = {
-            name,
-            description,
-            color,
-            userId
-        }
-
         try {
-            const createdCategory: Partial<iCategoriesOutput> = await categoriesMongoDbModel.create(newCategory)
+            const createdCategory: Partial<iCategoriesOutput> = await categoriesMongoDbModel.create(input)
             return createdCategory
         } catch (error: any) {
             throw new Error(error.message)
@@ -50,17 +36,11 @@ export class Category extends ModelBase<iCategoriesInput, iCategoriesOutput> {
     }
 
     async update(id: string, input: Partial<iCategoriesInput>): Promise<Partial<iCategoriesOutput | null>> {
-        const {
-            name,
-            description,
-            color
-        }: Partial<iCategoriesInput> = input
-
         try {
             const updatedCategory: Partial<iCategoriesOutput | null> = await categoriesMongoDbModel.findOneAndUpdate(
                 { _id: id, status: true },
                 {
-                    name, description, color
+                    name: input.name, description: input.description, color: input.color
                 },
                 {
                     new: true,
