@@ -68,11 +68,11 @@ export class IncomesController {
             const incomes = await income.readByWalletId(req.params.id)
 
             if (incomes.length === 0) {
-                res.status(404).json({ error: "Incomes not found" })
+                res.status(404).json({ error: "Income not found" })
                 return
             }
 
-            res.status(200).json({ message: 'Incomes found successfully', incomes: incomes })
+            res.status(200).json({ message: 'Income found successfully', incomes: incomes })
         } catch (error: any) {
             res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
@@ -97,7 +97,6 @@ export class IncomesController {
 
         try {
             const updatedIncome = await income.update(req.params.id, incomeData)
-
             res.status(200).json({ message: "Income updated successfully", income: updatedIncome })
         } catch (error: any) {
             if (error instanceof NotFoundError) {

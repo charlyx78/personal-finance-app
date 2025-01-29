@@ -93,27 +93,25 @@ export class Transaction extends ModelBase<iTransactionsInput, iTransactionsOutp
         session.startTransaction()
 
         try {
-            const updatedTransaction: Partial<iTransactionsOutput | null> = await this.mongoDbModel.findOneAndUpdate({ id: id, status: true }, {
+            const updatedTransaction: Partial<iTransactionsOutput | null> = await this.mongoDbModel.findOneAndUpdate({ _id: id, status: true }, {
                 amount: input.amount!,
                 categoryId: input.categoryId,
                 date: input.date,
                 notes: input.notes,
-                walletId: input.walletId
             }, { new: true, session })
 
             if (!updatedTransaction) {
-                throw new NotFoundError("transaction doesn't exists or has been deleted")
+                throw new NotFoundError("Transaction doesn't exists or has been deleted")
             }
 
             let walletUpdateAmount
             if (this.movement === 'income') {
-                walletUpdateAmount = input.amount!
-            }
-            if (this.movement === 'expense') {
-                walletUpdateAmount = -input.amount!
+                walletUpdateAmount = input.amount ?? 0
+            } else if (this.movement === 'expense') {
+                walletUpdateAmount = -(input.amount ?? 0)
             }
 
-            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ id: id, status: true }, {
+            const updatedWallet = await walletsMongoDbModel.findOneAndUpdate({ _id: updatedTransaction.walletId, status: true }, {
                 $inc: { balance: walletUpdateAmount },
             }, { new: true, session })
 

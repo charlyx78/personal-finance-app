@@ -6,7 +6,7 @@ import { config } from "../config.js";
 const expense = new Expense()
 
 export class ExpensesController {
-    create = async (req: Request, res: Response) => {
+    create = async (req: Request, res: Response): Promise<void> => {
         const {
             amount,
             categoryId,
@@ -32,7 +32,7 @@ export class ExpensesController {
         }
     }
 
-    read = async (req: Request, res: Response) => {
+    read = async (req: Request, res: Response): Promise<void> => {
         try {
             const expenses = await expense.read(req.user!._id)
 
@@ -47,7 +47,7 @@ export class ExpensesController {
         }
     }
 
-    readById = async (req: Request<{ id: string }>, res: Response) => {
+    readById = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
         try {
             const expenseFound = await expense.readById(req.params.id)
 
@@ -62,7 +62,7 @@ export class ExpensesController {
         }
     }
 
-    readByWalletId = async (req: Request<{ id: string }>, res: Response) => {
+    readByWalletId = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
         try {
             const expenses = await expense.readByWalletId(req.params.id)
 
@@ -77,7 +77,7 @@ export class ExpensesController {
         }
     }
 
-    update = async (req: Request<{ id: string }>, res: Response) => {
+    update = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
         const {
             amount,
             categoryId,
@@ -96,17 +96,17 @@ export class ExpensesController {
 
         try {
             const updatedExpense = await expense.update(req.params.id, expenseData)
-
             res.status(200).json({ message: "Expense updated successfully", expense: updatedExpense })
         } catch (error: any) {
             if (error instanceof NotFoundError) {
                 res.status(404).json({ error: error.message })
+                return
             }
             res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 
-    delete = async (req: Request<{ id: string }>, res: Response) => {
+    delete = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
         try {
             const deletedExpense = await expense.delete(req.params.id)
 
@@ -114,6 +114,7 @@ export class ExpensesController {
         } catch (error: any) {
             if (error instanceof NotFoundError) {
                 res.status(404).json({ error: error.message })
+                return
             }
             res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
