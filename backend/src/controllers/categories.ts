@@ -37,7 +37,7 @@ export class CategoriesController {
                 res.status(404).json({ error: "Categories not found" })
             }
 
-            res.status(200).json({ message: "Categories found", categories: categories })
+            res.status(200).json({ message: "Categories found successfully!", categories: categories })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }
@@ -51,7 +51,7 @@ export class CategoriesController {
                 res.status(404).json({ error: "Category not found" })
             }
 
-            res.status(200).json({ message: "Category found", categories: categoryFound })
+            res.status(200).json({ message: "Category found successfullysuccessfully!", categories: categoryFound })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }
@@ -77,7 +77,7 @@ export class CategoriesController {
                 res.status(404).json({ error: "Category doesn't exists or has been deleted" })
             }
 
-            res.status(200).json({ message: "Category updated", category: updatedCategory })
+            res.status(200).json({ message: "Category updated successfully!", category: updatedCategory })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }
@@ -91,7 +91,7 @@ export class CategoriesController {
                 res.status(404).json({ error: "Category doesn't exists or has already been deleted" })
             }
 
-            res.status(200).json({ message: "Category deleted", category: deletedCategory })
+            res.status(200).json({ message: "Category deleted successfully!", category: deletedCategory })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }

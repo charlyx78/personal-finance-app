@@ -26,7 +26,7 @@ export class AuthController {
                 sameSite: 'strict'
             })
 
-            res.status(200).json({ user: userLogged })
+            res.status(200).json({ mesage: "User authenticated successfully!", user: userLogged })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }

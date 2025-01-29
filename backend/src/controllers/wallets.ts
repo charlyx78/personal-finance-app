@@ -21,7 +21,7 @@ export class WalletsController {
 
         try {
             const newWallet = await wallet.create(walletData)
-            res.status(201).json({ wallet: newWallet })
+            res.status(201).json({ message: "Wallet created successfully!", wallet: newWallet })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }
@@ -32,7 +32,7 @@ export class WalletsController {
             const wallets = await wallet.read(req.user!.id)
 
             if (wallets.length === 0) {
-                res.status(400).json({ error: 'No wallets found for user' })
+                res.status(400).json({ message: 'Wallets found successfully!', error: 'Wallets not found' })
             }
 
             res.status(201).json({ wallets: wallets })
@@ -46,7 +46,7 @@ export class WalletsController {
             const walletFound = await wallet.readById(req.params.id)
 
             if (!walletFound) {
-                res.status(404).json({ error: 'Wallet not found' })
+                res.status(404).json({ message: 'Wallet found successfully!', error: 'Wallet not found' })
             }
 
             res.status(201).json({ wallet: walletFound })
@@ -60,7 +60,7 @@ export class WalletsController {
             name,
         } = req.body
 
-        const walletData: Partial<iWalletsInput>  = {
+        const walletData: Partial<iWalletsInput> = {
             name: name
         }
 
@@ -71,7 +71,7 @@ export class WalletsController {
                 res.status(404).json({ error: "Wallet doesn't exists or has been deleted" })
             }
 
-            res.status(200).json({ wallet: updatedWallet })
+            res.status(200).json({ message: 'Wallet updated successfully!', wallet: updatedWallet })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }
@@ -85,7 +85,7 @@ export class WalletsController {
                 res.status(404).json({ error: "Wallet doesn't exists or has already been deleted" })
             }
 
-            res.status(200).json({ wallet: deletedWallet })
+            res.status(200).json({ message: 'Wallet deleted successfully!', wallet: deletedWallet })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }

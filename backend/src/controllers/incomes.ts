@@ -26,7 +26,7 @@ export class IncomesController {
         try {
             const newIncome = await income.create(incomeData)
 
-            res.status(201).json({ message: 'Income created successfully', income: newIncome })
+            res.status(201).json({ message: 'Income created successfully!', income: newIncome })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }
@@ -40,7 +40,7 @@ export class IncomesController {
                 res.status(404).json({ error: "Incomes not found" })
             }
 
-            res.status(200).json({ message: 'Incomes found successfully', incomes: incomes })
+            res.status(200).json({ message: 'Incomes found successfully!', incomes: incomes })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }

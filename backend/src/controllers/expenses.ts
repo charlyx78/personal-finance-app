@@ -25,7 +25,7 @@ export class ExpensesController {
         try {
             const newExpense = await expense.create(expenseData)
 
-            res.status(201).json({ message: 'Expense created successfully', expense: newExpense })
+            res.status(201).json({ message: 'Expense created successfully!', expense: newExpense })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }
