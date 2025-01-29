@@ -3,7 +3,7 @@ import { Category } from "../models/Category.js"
 import { AuthController } from "./auth.js"
 import { Request, Response } from "express"
 import { iCategoriesInput } from "../interfaces/categories.js"
-
+import { config } from "../config.js"
 const category = new Category()
 
 export class CategoriesController {
@@ -25,7 +25,7 @@ export class CategoriesController {
             const newCategory = await category.create(categoryData)
             res.status(201).json({ message: "Category created successfully!", category: newCategory })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -39,7 +39,7 @@ export class CategoriesController {
 
             res.status(200).json({ message: "Categories found successfully!", categories: categories })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -53,7 +53,7 @@ export class CategoriesController {
 
             res.status(200).json({ message: "Category found successfullysuccessfully!", categories: categoryFound })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -79,7 +79,7 @@ export class CategoriesController {
 
             res.status(200).json({ message: "Category updated successfully!", category: updatedCategory })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -93,7 +93,7 @@ export class CategoriesController {
 
             res.status(200).json({ message: "Category deleted successfully!", category: deletedCategory })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 }

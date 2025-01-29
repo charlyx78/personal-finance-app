@@ -2,6 +2,7 @@ import { Expense } from "../models/Expense.js";
 import { NotFoundError } from "./errors.js";
 import { Request, Response } from "express";
 import { iTransactionsInput } from "../interfaces/transactions.js";
+import { config } from "../config.js";
 const expense = new Expense()
 
 export class ExpensesController {
@@ -27,7 +28,7 @@ export class ExpensesController {
 
             res.status(201).json({ message: 'Expense created successfully!', expense: newExpense })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -41,7 +42,7 @@ export class ExpensesController {
 
             res.status(200).json({ message: 'Expenses found successfully', expenses: expenses })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -55,7 +56,7 @@ export class ExpensesController {
 
             res.status(200).json({ message: 'Expenses found successfully', expense: expenseFound })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -69,7 +70,7 @@ export class ExpensesController {
 
             res.status(200).json({ message: 'Expenses found successfully', expenses: expenses })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -98,7 +99,7 @@ export class ExpensesController {
             if (error instanceof NotFoundError) {
                 res.status(404).json({ error: error.message })
             }
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -111,7 +112,7 @@ export class ExpensesController {
             if (error instanceof NotFoundError) {
                 res.status(404).json({ error: error.message })
             }
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 }

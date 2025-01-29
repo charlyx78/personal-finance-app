@@ -26,8 +26,8 @@ export class UserController {
         try {
             const newUser = await user.create(userData)
             res.status(201).json({ message: "User created successfully!", user: newUser })
-        } catch (error) {
-            res.status(500).json({ error: error })
+        } catch (error: any) {
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 }

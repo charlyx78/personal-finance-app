@@ -4,24 +4,48 @@ dotenv.config()
 
 interface EnvVariables {
     PORT: number,
-    MONGO_URI?: string,
+    MONGO_URI: string,
     SALT_ROUNDS: number,
-    SECRET_JWT_KEY?: string, 
-    NODE_ENV?: string 
+    SECRET_JWT_KEY: string,
+    NODE_ENV: string,
+    REFRESH_TOKEN_EXPIRATION_TIME: string,
+    ACCESS_TOKEN_EXPIRATION_TIME: string
 }
 
 const {
-    PORT = 3000,
+    PORT,
     MONGO_URI,
-    SALT_ROUNDS = 10,
-    SECRET_JWT_KEY, 
-    NODE_ENV 
+    SALT_ROUNDS,
+    SECRET_JWT_KEY,
+    NODE_ENV,
+    REFRESH_TOKEN_EXPIRATION_TIME,
+    ACCESS_TOKEN_EXPIRATION_TIME
 } = process.env
 
+if (!PORT ||
+    !MONGO_URI ||
+    !SALT_ROUNDS ||
+    !SECRET_JWT_KEY ||
+    !NODE_ENV ||
+    !REFRESH_TOKEN_EXPIRATION_TIME ||
+    !ACCESS_TOKEN_EXPIRATION_TIME
+) {
+    throw new Error(NODE_ENV === 'PROD' ? "Server error" : "Environment variable missing");
+}
+
+const portNumber = parseInt(PORT) 
+const saltRoundsNumber = parseInt(SALT_ROUNDS) 
+
+if (isNaN(portNumber) || isNaN(saltRoundsNumber)) {
+    throw new Error(NODE_ENV === 'PROD' ? 'Server error' : "Environment variable missing")
+}
+
 export const config: EnvVariables = {
-    PORT: Number(PORT),
+    PORT: portNumber,
     MONGO_URI,
-    SALT_ROUNDS: Number(SALT_ROUNDS),
+    SALT_ROUNDS: saltRoundsNumber,
     SECRET_JWT_KEY,
-    NODE_ENV
+    NODE_ENV,
+    REFRESH_TOKEN_EXPIRATION_TIME,
+    ACCESS_TOKEN_EXPIRATION_TIME
 }

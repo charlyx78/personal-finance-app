@@ -2,6 +2,7 @@ import { Income } from "../models/Income.js";
 import { NotFoundError } from "./errors.js";
 import { Request, Response } from "express";
 import { iTransactionsInput } from "../interfaces/transactions.js";
+import { config } from "../config.js";
 
 const income = new Income()
 
@@ -28,7 +29,7 @@ export class IncomesController {
 
             res.status(201).json({ message: 'Income created successfully!', income: newIncome })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -42,7 +43,7 @@ export class IncomesController {
 
             res.status(200).json({ message: 'Incomes found successfully!', incomes: incomes })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -56,7 +57,7 @@ export class IncomesController {
 
             res.status(200).json({ message: 'Incomes found successfully', income: incomeFound })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -70,7 +71,7 @@ export class IncomesController {
 
             res.status(200).json({ message: 'Incomes found successfully', incomes: incomes })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -99,7 +100,7 @@ export class IncomesController {
             if (error instanceof NotFoundError) {
                 res.status(404).json({ error: error.message })
             }
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 
@@ -112,7 +113,7 @@ export class IncomesController {
             if (error instanceof NotFoundError) {
                 res.status(404).json({ error: error.message })
             }
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
     }
 }

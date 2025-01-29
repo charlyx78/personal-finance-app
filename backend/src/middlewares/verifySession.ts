@@ -25,18 +25,18 @@ interface iUserData {
 }
 
 export const verifySession = (req: Request, res: Response, next: NextFunction): void => {
-    const token = req.cookies.access_token
-    if (!token) {
+    const accessToken = req.cookies.accessToken
+    if (!accessToken) {
         res.status(403).json({ message: 'Access not authorized' })
         return
     }
 
     try {
-        const userData = jwt.verify(token, config.SECRET_JWT_KEY!) as iUserData
+        const userData = jwt.verify(accessToken, config.SECRET_JWT_KEY) as iUserData
         req.user = userData.user
         next()
-    } catch (error) {
-        res.status(401).json({ message: 'Access not authorized' })
+    } catch (error: any) {
+        res.status(401).json({ error: config.NODE_ENV === "PROD" ? 'Access not authorized' : error.message })
         return
     }
 }
