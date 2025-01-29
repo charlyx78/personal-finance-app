@@ -1,5 +1,5 @@
 import { Wallet } from "../models/Wallet.js"
-import { iWalletsInput } from "../interfaces/wallets.js" 
+import { iWalletsInput } from "../interfaces/wallets.js"
 import { Response, Request } from "express"
 
 const wallet = new Wallet()
@@ -16,7 +16,7 @@ export class WalletsController {
             name,
             balance,
             type,
-            userId: req.user!.id
+            userId: req.user!._id
         }
 
         try {
@@ -29,13 +29,14 @@ export class WalletsController {
 
     read = async (req: Request, res: Response): Promise<void> => {
         try {
-            const wallets = await wallet.read(req.user!.id)
+            const wallets = await wallet.read(req.user!._id)
 
             if (wallets.length === 0) {
                 res.status(400).json({ message: 'Wallets found successfully!', error: 'Wallets not found' })
+                return
             }
 
-            res.status(201).json({ wallets: wallets })
+            res.status(201).json({ message: "Wallets founds succesfully!", wallets: wallets })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }
@@ -46,29 +47,27 @@ export class WalletsController {
             const walletFound = await wallet.readById(req.params.id)
 
             if (!walletFound) {
-                res.status(404).json({ message: 'Wallet found successfully!', error: 'Wallet not found' })
+                res.status(404).json({ error: 'Wallet not found' })
+                return
             }
 
-            res.status(201).json({ wallet: walletFound })
+            res.status(201).json({ message: "Wallet found succesfully!", wallet: walletFound })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }
     }
 
     update = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
-        const {
-            name,
-        } = req.body
+        const { name } = req.body
 
-        const walletData: Partial<iWalletsInput> = {
-            name: name
-        }
+        const walletData: Partial<iWalletsInput> = { name }
 
         try {
             const updatedWallet = await wallet.update(req.params.id, walletData)
 
             if (!updatedWallet) {
                 res.status(404).json({ error: "Wallet doesn't exists or has been deleted" })
+                return
             }
 
             res.status(200).json({ message: 'Wallet updated successfully!', wallet: updatedWallet })
@@ -83,6 +82,7 @@ export class WalletsController {
 
             if (!deletedWallet) {
                 res.status(404).json({ error: "Wallet doesn't exists or has already been deleted" })
+                return
             }
 
             res.status(200).json({ message: 'Wallet deleted successfully!', wallet: deletedWallet })

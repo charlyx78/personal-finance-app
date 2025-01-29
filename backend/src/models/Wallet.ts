@@ -42,7 +42,7 @@ export class Wallet extends ModelBase<iWalletsInput, iWalletsOutput> {
     async update(id: string, input: Partial<iWalletsInput>) : Promise<Partial<iWalletsOutput | null>> {
         try {
             const updatedWallet: Partial<iWalletsOutput | null> = await walletsMongoDbModel.findOneAndUpdate({ _id: id, status: true }, {
-                input
+                $set: input
             }, {
                 new: true,
                 projection: {

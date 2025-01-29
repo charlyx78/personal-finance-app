@@ -20,7 +20,7 @@ export class ExpensesController {
             categoryId,
             date,
             notes,
-            userId: req.user!.id,
+            userId: req.user!._id,
             walletId
         }
         try {
@@ -28,21 +28,22 @@ export class ExpensesController {
 
             res.status(201).json({ message: 'Expense created successfully!', expense: newExpense })
         } catch (error: any) {
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 
     read = async (req: Request, res: Response) => {
         try {
-            const expenses = await expense.read(req.user!.id)
+            const expenses = await expense.read(req.user!._id)
 
             if (expenses.length === 0) {
                 res.status(404).json({ error: "Expenses not found" })
+                return
             }
 
             res.status(200).json({ message: 'Expenses found successfully', expenses: expenses })
         } catch (error: any) {
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 
@@ -52,11 +53,12 @@ export class ExpensesController {
 
             if (!expenseFound) {
                 res.status(404).json({ error: "Expense not found" })
+                return
             }
 
             res.status(200).json({ message: 'Expenses found successfully', expense: expenseFound })
         } catch (error: any) {
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 
@@ -66,11 +68,12 @@ export class ExpensesController {
 
             if (expenses.length === 0) {
                 res.status(404).json({ error: "Expenses not found" })
+                return
             }
 
             res.status(200).json({ message: 'Expenses found successfully', expenses: expenses })
         } catch (error: any) {
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 
@@ -99,7 +102,7 @@ export class ExpensesController {
             if (error instanceof NotFoundError) {
                 res.status(404).json({ error: error.message })
             }
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 
@@ -112,7 +115,7 @@ export class ExpensesController {
             if (error instanceof NotFoundError) {
                 res.status(404).json({ error: error.message })
             }
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 }

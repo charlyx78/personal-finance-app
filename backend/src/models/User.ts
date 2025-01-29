@@ -1,4 +1,5 @@
-import { iUsers, userMongoDbModel } from '../schemas/mongodb/users'
+import { userMongoDbModel } from '../schemas/mongodb/users'
+import { iUsers } from '../interfaces/users'
 
 export class User {
     async create(input: iUsers): Promise<Partial<iUsers>> {

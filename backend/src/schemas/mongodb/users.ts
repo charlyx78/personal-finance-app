@@ -1,13 +1,6 @@
 import { Model, Schema, model } from "mongoose";
 import { handleMongoosePostSaveErrors } from "../../middlewares/handleMongoosePostSaveErrors"
-
-export interface iUsers {
-    name: string,
-    lastName: string,
-    email: string,
-    password: string,
-    status?: boolean
-}
+import { iUsers } from "../../interfaces/users";
 
 type UsersModel = Model<iUsers>
 
@@ -33,8 +26,10 @@ const usersSchema = new Schema<iUsers, UsersModel>({
         type: String,
         minlength: 8,
         maxlength: 255,
-        hide: true,
         required: true
+    },
+    sessionToken: {
+        type: String,
     },
     status: {
         type: Boolean,

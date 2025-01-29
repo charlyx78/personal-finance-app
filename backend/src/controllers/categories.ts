@@ -18,28 +18,29 @@ export class CategoriesController {
             name,
             description,
             color,
-            userId: req.user!.id
+            userId: req.user!._id
         }
 
         try {
             const newCategory = await category.create(categoryData)
             res.status(201).json({ message: "Category created successfully!", category: newCategory })
         } catch (error: any) {
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 
     read = async (req: Request, res: Response): Promise<void> => {
         try {
-            const categories = await category.read(req.user!.id)
+            const categories = await category.read(req.user!._id)
 
             if (categories.length === 0) {
                 res.status(404).json({ error: "Categories not found" })
+                return
             }
 
             res.status(200).json({ message: "Categories found successfully!", categories: categories })
         } catch (error: any) {
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 
@@ -49,11 +50,12 @@ export class CategoriesController {
 
             if (!categoryFound) {
                 res.status(404).json({ error: "Category not found" })
+                return
             }
 
             res.status(200).json({ message: "Category found successfullysuccessfully!", categories: categoryFound })
         } catch (error: any) {
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 
@@ -79,7 +81,7 @@ export class CategoriesController {
 
             res.status(200).json({ message: "Category updated successfully!", category: updatedCategory })
         } catch (error: any) {
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 
@@ -89,11 +91,12 @@ export class CategoriesController {
 
             if (!deletedCategory) {
                 res.status(404).json({ error: "Category doesn't exists or has already been deleted" })
+                return
             }
 
             res.status(200).json({ message: "Category deleted successfully!", category: deletedCategory })
         } catch (error: any) {
-            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
+            res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
         }
     }
 }

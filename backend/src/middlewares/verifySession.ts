@@ -1,26 +1,18 @@
 import jwt from 'jsonwebtoken'
 import { config } from '../config'
 import { NextFunction, Request, Response } from 'express'
+import { iUserSessionData } from '../interfaces/users'
 
 declare global {
     namespace Express {
         export interface Request {
             user?: {
-                id: string,
+                _id: string,
                 name: string,
                 lastName: string,
                 email: string
             }
         }
-    }
-}
-
-interface iUserData {
-    user: {
-        id: string,
-        name: string,
-        lastName: string,
-        email: string
     }
 }
 
@@ -32,7 +24,7 @@ export const verifySession = (req: Request, res: Response, next: NextFunction): 
     }
 
     try {
-        const userData = jwt.verify(accessToken, config.SECRET_JWT_KEY) as iUserData
+        const userData = jwt.verify(accessToken, config.SECRET_JWT_KEY) as iUserSessionData
         req.user = userData.user
         next()
     } catch (error: any) {

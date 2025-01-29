@@ -1,8 +1,8 @@
 import { config } from "../config";
 import { Auth } from "../models/Auth";
 import jwt from 'jsonwebtoken'
-import { iUsers } from "../schemas/mongodb/users";
 import { Request, Response } from "express";
+import { iUsersOutput, iUserSessionData } from "../interfaces/users";
 
 const auth = new Auth()
 
@@ -34,6 +34,8 @@ export class AuthController {
                 sameSite: 'strict'
             })
 
+            await auth.saveToken(userLogged._id!, refreshToken)
+
             res.status(200).json({ mesage: "User authenticated successfully!" })
         } catch (error: any) {
             res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" : error.message })
@@ -41,13 +43,20 @@ export class AuthController {
     }
 
     refreshToken = async (req: Request, res: Response): Promise<void> => {
-        const refreshToken = req.cookies.refresh_token
+        const refreshToken = req.cookies.refreshToken
         if (!refreshToken) {
             res.status(401).json({ message: "Error while regenerating session. Please try login agin" })
+            return
         }
 
         try {
-            const userData = jwt.verify(refreshToken, config.SECRET_JWT_KEY)
+            const userData = jwt.verify(refreshToken, config.SECRET_JWT_KEY) as iUserSessionData
+            const dbRefreshToken = await auth.getToken(userData.user._id)
+
+            if (refreshToken != dbRefreshToken) {
+                res.status(401).json({ message: "Error while regenerating session. Please try login agin" })
+                return
+            }
 
             const newAccessToken = jwt.sign(
                 { user: userData },
@@ -61,8 +70,8 @@ export class AuthController {
             })
 
             res.status(200).json({ message: "Token refreshed successfully!" })
-        } catch (error) {
-            res.status(403).json({ message: "Error while regenerating session. Please try login agin" })
+        } catch (error: any) {
+            res.status(403).json({ error: config.NODE_ENV === "PROD" ? "Error while regenerating session. Please try login agin": error.message })
         }
     }
 

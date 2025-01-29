@@ -21,7 +21,7 @@ export class IncomesController {
             categoryId,
             date,
             notes,
-            userId: req.user!.id,
+            userId: req.user!._id,
             walletId
         }
         try {
@@ -35,10 +35,11 @@ export class IncomesController {
 
     read = async (req: Request, res: Response) => {
         try {
-            const incomes = await income.read(req.user!.id)
+            const incomes = await income.read(req.user!._id)
 
             if (incomes.length === 0) {
                 res.status(404).json({ error: "Incomes not found" })
+                return
             }
 
             res.status(200).json({ message: 'Incomes found successfully!', incomes: incomes })
@@ -53,6 +54,7 @@ export class IncomesController {
 
             if (!incomeFound) {
                 res.status(404).json({ error: "Income not found" })
+                return
             }
 
             res.status(200).json({ message: 'Incomes found successfully', income: incomeFound })
@@ -67,6 +69,7 @@ export class IncomesController {
 
             if (incomes.length === 0) {
                 res.status(404).json({ error: "Incomes not found" })
+                return
             }
 
             res.status(200).json({ message: 'Incomes found successfully', incomes: incomes })
@@ -99,6 +102,7 @@ export class IncomesController {
         } catch (error: any) {
             if (error instanceof NotFoundError) {
                 res.status(404).json({ error: error.message })
+                return
             }
             res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
@@ -112,6 +116,7 @@ export class IncomesController {
         } catch (error: any) {
             if (error instanceof NotFoundError) {
                 res.status(404).json({ error: error.message })
+                return
             }
             res.status(500).json({ error: config.NODE_ENV === "PROD" ? "An unexpected error ocurred. Please try again" :  error.message })
         }
