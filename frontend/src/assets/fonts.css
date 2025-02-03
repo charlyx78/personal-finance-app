@@ -1,0 +1,7 @@
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DMSans-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-variation-settings: 'opsz' 12, 'wght' 400;
+}

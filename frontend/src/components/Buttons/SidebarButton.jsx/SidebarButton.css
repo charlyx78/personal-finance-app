@@ -1,0 +1,21 @@
+.sidebar-button {
+  width: 200px;
+  padding: 20px 30px;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.sidebar-button:hover {
+  background-color: #388E3C;
+  color: #FFF;
+}
+
+.sidebar-button:active {
+  background-color: #4CAF50;
+  color: #FFF;
+}
+
+.sidebar-button.active {
+  background-color: #388E3C;
+  color: #FFF;
+}
+

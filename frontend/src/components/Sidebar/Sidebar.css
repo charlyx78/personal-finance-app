@@ -1,0 +1,19 @@
+.sidebar-container {
+  position: fixed;
+  width: 250px;
+  height: 100%;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 100;
+  border-right: solid 1px rgba(0, 0, 0, 0.15);
+}
+
+.logo-container {
+  padding: 40px 0;
+}
+
+.logo {
+  width: 200px;
+}
